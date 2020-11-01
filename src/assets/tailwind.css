@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+.CodeMirror {
+  height: 100% !important;
+  background: none !important;
+  font-size: 0.95rem;
+}
+.CodeMirror,
+.CodeMirror-gutters {
+  @apply bg-white;
+}
+.CodeMirror-overlayscroll-horizontal div,
+.CodeMirror-overlayscroll-vertical div {
+  @apply bg-gray-300;
+}
+.mode-dark .CodeMirror,
+.mode-dark .CodeMirror-gutters {
+  @apply bg-gray-900;
+}
+.mode-dark .CodeMirror-overlayscroll-horizontal div,
+.mode-dark .CodeMirror-overlayscroll-vertical div {
+  @apply bg-gray-800;
+}
+.CodeMirror-scrollbar-filler,
+.CodeMirror-gutter-filler {
+  background-color: transparent !important;
+}
+.CodeMirror-widget {
+  @apply inline-block px-2 mx-1 align-middle bg-indigo-600 shadow rounded text-white cursor-pointer;
+}
+.CodeMirror-widget:hover {
+  @apply bg-indigo-700;
+}

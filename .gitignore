@@ -21,3 +21,9 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Vue Browser Extension Output
+*.pem
+*.pub
+*.zip
+/artifacts
