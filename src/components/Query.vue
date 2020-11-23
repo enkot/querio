@@ -4,7 +4,7 @@
       <ButtonGroup
         v-model="activeView"
         :items="viewButtons"
-        activeBgClass="bg-pink-500"
+        :activeBgClass="`bg-${typeColors[entry.type]}`"
         class="flex-shrink-0"
       />
       <div
@@ -15,28 +15,59 @@
       </div>
     </div>
     <div v-if="entry" class="relative flex-grow overflow-hidden">
-      <codemirror
-        v-if="activeView === 'GQL'"
-        ref="cmEditor"
-        :value="query"
-        :options="cmOptions"
-        class="h-full ml-1"
+      <template v-if="activeView === 'query'">
+        <codemirror
+          v-if="entry.type === 'GQL'"
+          ref="cmEditor"
+          :value="query"
+          :options="cmOptions"
+          class="h-full ml-1"
+        />
+        <Scroll v-else>
+          <div class="p-3">
+            <ul class="space-y-3">
+              <li class="flex flex-col font-semibold">
+                <div class="text-gray-600">Origin</div>
+                <div
+                  class="mt-1 px-2 py-1.5 rounded bg-gray-200 dark:bg-gray-850 text-gray-700 dark:text-gray-200"
+                >
+                  {{ entry.request.origin }}
+                </div>
+              </li>
+              <li class="flex flex-col font-semibold">
+                <div class="text-gray-600">Path</div>
+                <div
+                  class="mt-1 px-2 py-1.5 rounded bg-gray-200 dark:bg-gray-850 text-attribute dark:text-attribute-light"
+                >
+                  {{ entry.request.pathname }}
+                </div>
+              </li>
+              <li v-if="query.length" class="flex flex-col font-semibold">
+                <div class="text-gray-600">Query Parameters</div>
+                <Params :items="query" class="mt-1" />
+              </li>
+            </ul>
+          </div>
+        </Scroll>
+      </template>
+      <Headers
+        v-else-if="activeView === 'headers'"
+        :items="entry.request.headers"
       />
-      <Scroll v-else-if="activeView === 'Headers'" :ops="scrollOptions">
-        <Headers :items="entry.request.headers" />
-      </Scroll>
     </div>
   </div>
 </template>
 
 <script>
-import Headers from '@/components/Headers'
+import { mapState } from 'vuex'
 
-import tailwind from '../../tailwind.config'
+import Headers from '@/components/Headers'
+import Params from '@/components/Params'
 
 export default {
   components: {
     Headers,
+    Params,
   },
   props: {
     entry: {
@@ -44,28 +75,33 @@ export default {
     },
   },
   computed: {
+    ...mapState(['typeColors']),
     query() {
-      return this.entry.request.query.replace(/\n$/, '')
+      const { type, request } = this.entry
+
+      return type === 'GQL'
+        ? request.query.replace(/\n$/, '')
+        : Object.entries(request.query).map(([name, value]) => ({
+            name,
+            value,
+          }))
     },
-    scrollOptions() {
-      return {
-        bar: {
-          background: tailwind.theme.extend.colors.gray['500'],
+    viewButtons() {
+      return [
+        {
+          title: this.entry.type,
+          name: 'query',
         },
-      }
+        {
+          title: 'Headers',
+          name: 'headers',
+        },
+      ]
     },
   },
   data() {
     return {
-      activeView: 'GQL',
-      viewButtons: [
-        {
-          name: 'GQL',
-        },
-        {
-          name: 'Headers',
-        },
-      ],
+      activeView: 'query',
       cmOptions: {
         mode: 'graphql',
       },

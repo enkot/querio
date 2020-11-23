@@ -7,11 +7,11 @@
       :class="
         item.name === value
           ? `${activeBgClass} text-white`
-          : 'bg-gray-200 dark:bg-gray-800 text-gray-550'
+          : 'bg-gray-200 dark:bg-gray-800 text-gray-550 hover:bg-gray-300 hover:text-gray-600 dark-hover:bg-gray-700 dark-hover:text-gray-500'
       "
       @click="$emit('input', item.name)"
     >
-      {{ item.name }}
+      {{ item.title }}
     </button>
   </div>
 </template>

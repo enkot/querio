@@ -1,4 +1,10 @@
 import { parse } from 'graphql'
+import parseUrl from 'url-parse'
+import httpStatus from 'statuses'
+
+function ID() {
+  return `${Date.now() + Math.random()}`
+}
 
 function getValue(value) {
   switch (value.kind) {
@@ -115,9 +121,11 @@ function parseQuery(query, variables = {}) {
   }
 }
 
-export function isGraphQL(entry) {
-  // console.log(entry.request)
+export function isHTTP(entry) {
+  return ['xhr', 'fetch'].includes(entry._resourceType)
+}
 
+export function isGraphQL(entry) {
   try {
     if (isContentType(entry, 'application/graphql')) {
       return true
@@ -139,7 +147,70 @@ export function isGraphQL(entry) {
   }
 }
 
-export function parseEntry(entry) {
+export function parseHTTPEntry(entry) {
+  console.log(entry)
+  const { url, method, postData } = entry.request
+  const { origin, host, pathname, query } = parseUrl(url, true)
+  const queryParams = Object.entries(query)
+    .map(([name, value]) => `${name}=${value}`)
+    .join('&')
+  let body
+  let params
+
+  if (postData) {
+    if (postData.params) {
+      params = postData.params
+    } else {
+      try {
+        body = JSON.parse(postData.text)
+      } catch (e) {
+        console.warn(
+          `Internal Error Parsing: ${entry}. Message: ${e.message}. Stack: ${e.stack}`
+        )
+        return
+      }
+    }
+  }
+
+  return new Promise(resolve => {
+    entry.getContent(responseBody => {
+      let parseError
+      let json
+
+      try {
+        json = JSON.parse(responseBody)
+      } catch (e) {
+        parseError = `Cant't parse response content`
+        console.warn(
+          `Internal Error Parsing: ${entry}. Message: ${e.message}. Stack: ${e.stack}`
+        )
+      }
+
+      resolve(
+        formatResult(
+          method,
+          pathname,
+          entry,
+          json,
+          {
+            origin,
+            host,
+            pathname,
+            query,
+            queryString: queryParams ? `?${queryParams}` : '',
+            body,
+            params,
+          },
+          {
+            parseError,
+          }
+        )
+      )
+    })
+  })
+}
+
+export function parseGQLEntry(entry) {
   const parsedQueries = []
 
   if (isContentType(entry, 'application/graphql')) {
@@ -156,9 +227,10 @@ export function parseEntry(entry) {
     try {
       json = JSON.parse(entry.request.postData.text)
     } catch (e) {
-      return Promise.resolve(
+      console.warn(
         `Internal Error Parsing: ${entry}. Message: ${e.message}. Stack: ${e.stack}`
       )
+      return
     }
 
     if (!Array.isArray(json)) {
@@ -173,9 +245,10 @@ export function parseEntry(entry) {
         variables =
           typeof variables === 'string' ? JSON.parse(variables) : variables
       } catch (e) {
-        return Promise.resolve(
+        console.warn(
           `Internal Error Parsing: ${entry}. Message: ${e.message}. Stack: ${e.stack}`
         )
+        return
       }
 
       parsedQueries.push(parseQuery(query, variables))
@@ -185,39 +258,66 @@ export function parseEntry(entry) {
   return new Promise(resolve => {
     entry.getContent(responseBody => {
       const parsedResponseBody = JSON.parse(responseBody)
-      const { url, postData, headers: requestHeaders } = entry.request
-      const {
-        content,
-        headers: responseHeaders,
-        httpStatus,
-        _error,
-      } = entry.response
 
       resolve(
         parsedQueries.map((parsedQuery, i) => {
-          return {
-            id: `${Date.now() + Math.random()}`,
-            time: entry.time,
-            request: {
-              url,
-              headers: requestHeaders,
-              mimeType: postData.mimeType,
-              name: parsedQuery.data[i].name,
-              operations: parsedQuery.data[i].operations.map(item => item.name),
-              ...parsedQuery,
-            },
-            response: {
-              headers: responseHeaders,
-              mimeType: content.mimeType,
-              body: Array.isArray(parsedResponseBody)
-                ? parsedResponseBody[i]
-                : parsedResponseBody,
-              status: httpStatus,
-              error: _error,
-            },
-          }
+          const { data, query, variables } = parsedQuery
+          const { name, operations } = data[i]
+          const reponseBody = Array.isArray(parsedResponseBody)
+            ? parsedResponseBody[i]
+            : parsedResponseBody
+
+          return formatResult('GQL', name, entry, reponseBody, {
+            operations: operations.map(item => item.name),
+            query,
+            variables,
+          })
         })
       )
     })
   })
+}
+
+function formatResult(
+  type,
+  name,
+  entry,
+  responseBody,
+  requestSpecific,
+  responseSpecific = {}
+) {
+  const { url, postData, headers: requestHeaders } = entry.request
+  const { content, headers: responseHeaders, status, _error } = entry.response
+  const hasError =
+    _error || status >= 400 || (type === 'GQL' && responseBody.errors)
+  let statusMessage
+
+  try {
+    statusMessage = httpStatus(status)
+  } catch (e) {
+    console.warn(e.message)
+  }
+
+  return {
+    id: ID(),
+    time: entry.time,
+    type,
+    request: {
+      url,
+      headers: requestHeaders,
+      mimeType: postData ? postData.mimeType : undefined,
+      name,
+      ...requestSpecific,
+    },
+    response: {
+      status,
+      statusMessage,
+      isError: hasError,
+      networkError: _error,
+      headers: responseHeaders,
+      mimeType: content.mimeType,
+      body: responseBody,
+      ...responseSpecific,
+    },
+  }
 }

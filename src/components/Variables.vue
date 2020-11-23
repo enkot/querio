@@ -4,25 +4,42 @@
     style="max-height: calc(100% - 2.5rem);"
   >
     <div
-      class="flex flex-shrink-0 h-10 items-center px-3 text-gray-550 dark:text-gray-600 hover:text-gray-600 dark-hover:text-gray-500 cursor-pointer"
+      class="flex justify-between flex-shrink-0 h-10 items-center px-3 cursor-pointer border-t border-gray-300 dark:border-gray-800 "
       @click="toggle"
     >
-      <span class="font-bold uppercase">Variables</span>
-      <ShevronDown v-if="show" class="h-5" />
-      <ShevronUp v-else class="h-5" />
+      <div
+        class="flex items-center flex-shrink-0 text-gray-550 dark:text-gray-600 hover:text-gray-600 dark-hover:text-gray-500 "
+      >
+        <span class="font-bold uppercase">
+          {{ entry.type === 'GQL' ? 'Variables' : 'Body' }}
+        </span>
+        <ShevronDown v-if="show" class="h-5" />
+        <ShevronUp v-else class="h-5" />
+      </div>
+      <div
+        v-if="entry.type !== 'GQL'"
+        class="whitespace-no-wrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-700"
+      >
+        {{ entry.request.mimeType }}
+      </div>
     </div>
-    <div v-if="entry && show" class="relative flex-grow pl-1 overflow-hidden">
-      <codemirror v-model="variables" class="h-full" />
+    <div v-if="entry && show" class="relative flex-grow overflow-hidden">
+      <Scroll v-if="params">
+        <Params :items="params" class="px-3 pb-3" />
+      </Scroll>
+      <codemirror v-else :value="variables || body" class="ml-1 h-full" />
     </div>
   </div>
 </template>
 
 <script>
+import Params from '@/components/Params'
 import ShevronUp from '@/assets/shevron-up.svg'
 import ShevronDown from '@/assets/shevron-down.svg'
 
 export default {
   components: {
+    Params,
     ShevronUp,
     ShevronDown,
   },
@@ -32,6 +49,12 @@ export default {
     },
   },
   computed: {
+    params() {
+      return this.entry.request.params
+    },
+    body() {
+      return JSON.stringify(this.entry.request.body, null, 2)
+    },
     variables() {
       return JSON.stringify(this.entry.request.variables, null, 2)
     },

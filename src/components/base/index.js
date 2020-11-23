@@ -1,4 +1,5 @@
 import Vue from 'vue'
 
-Vue.component('BaseModal', () => import('@/components/base/BaseModal'))
+Vue.component('Modal', () => import('@/components/base/Modal'))
 Vue.component('ButtonGroup', () => import('@/components/base/ButtonGroup'))
+Vue.component('Scroll', () => import('@/components/base/Scroll'))

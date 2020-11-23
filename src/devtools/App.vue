@@ -7,7 +7,7 @@
         <Logo class="h-5 w-5" />
       </div>
       <button
-        class="flex h-10 w-10 justify-center items-center text-gray-600 hover:bg-gray-300 dark-hover:bg-gray-800 focus:outline-none"
+        class="flex h-10 w-10 justify-center items-center text-gray-600 hover:text-gray-800 dark-hover:text-gray-400 focus:outline-none"
         @click="settingsOpened = true"
       >
         <CogIcon class="h-5 w-5 " />
@@ -17,7 +17,7 @@
       <div
         class="col-span-4 md:col-span-2 row-span-6 bg-gray-100 dark:bg-gray-850 border-r border-gray-300 dark:border-gray-800 overflow-hidden"
       >
-        <List v-model="active" :entries="entries" />
+        <List v-model="active" :entries="entries" @clear="clear" />
       </div>
       <div
         v-if="!active"
@@ -29,15 +29,18 @@
         <div
           class="grid grid-rows-1 row-span-3 md:row-span-6 col-span-8 md:col-span-4 bg-white dark:bg-gray-900 overflow-hidden"
         >
-          <div class="flex flex-col overflow-hidden">
+          <div
+            class="flex flex-col overflow-hidden border-b md:border-none border-gray-300 dark:border-gray-800"
+          >
             <Query
               ref="query"
               :entry="active"
-              class="flex-grow border-b border-gray-300 dark:border-gray-800 overflow-hidden"
+              class="flex-grow overflow-hidden"
             />
             <Variables
+              v-if="active.type !== 'GET'"
               :entry="active"
-              class="flex-shrink-0 border-b md:border-none border-gray-300 dark:border-gray-800 overflow-hidden"
+              class="flex-shrink-0 overflow-hidden"
               @toggled="refresh"
             />
           </div>
@@ -55,15 +58,15 @@
     <Settings
       v-model="settingsOpened"
       :settings="settings"
-      @update:settings="settingsChanged"
+      @update:settings="changeSettings"
     />
     <portal-target name="modals" />
   </div>
 </template>
 
 <script>
-import Lockr from 'lockr'
-import { isGraphQL, parseEntry } from '@/utils'
+import { mapState, mapMutations } from 'vuex'
+import { isGraphQL, isHTTP, parseGQLEntry, parseHTTPEntry } from '@/utils'
 
 import List from '@/components/List'
 import Query from '@/components/Query'
@@ -74,8 +77,6 @@ import Settings from '@/components/Settings'
 import Logo from '@/assets/logo-small.svg'
 import Ghost from '@/assets/ghost.svg'
 import CogIcon from '@/assets/cog.svg'
-
-Lockr.prefix = 'graphio_'
 
 export default {
   name: 'App',
@@ -93,49 +94,50 @@ export default {
     return {
       entries: [],
       active: null,
-      settings: Lockr.get('settings') || {
-        colorMode: 'Auto',
-      },
       settingsOpened: false,
     }
   },
+  computed: {
+    ...mapState(['settings']),
+  },
   created() {
-    this.changeColorMode(this.settings.colorMode)
-    browser.devtools.network.onRequestFinished.addListener(async entry => {
-      console.log('called')
-      if (!isGraphQL(entry)) return
+    this.changeSettings(this.settings)
+    browser.devtools.network.onRequestFinished.addListener(async req => {
+      if (isGraphQL(req)) {
+        const entries = await parseGQLEntry(req)
 
-      const entries = await parseEntry(entry)
-
-      console.log('entries', entries)
-
-      console.log('entry', entry)
-
-      entries.forEach(data => {
-        this.entries.push(data)
-        if (!this.active) [this.active] = this.entries
-      })
+        entries.forEach(entry => {
+          this.entries.push(entry)
+          console.log('entry', entry)
+        })
+      } else if (isHTTP(req)) {
+        const entry = await parseHTTPEntry(req)
+        this.entries.push(entry)
+        console.log('entry', entry)
+      }
+      if (!this.active) [this.active] = this.entries
     })
   },
   methods: {
+    ...mapMutations(['setSettings']),
     async refresh() {
       await this.$nextTick()
       if (this.$refs.query) this.$refs.query.refresh()
     },
-    settingsChanged(settings) {
-      Lockr.set('settings', settings)
-
-      this.changeColorMode(settings.colorMode)
+    changeSettings(settings) {
+      this.setSettings(settings)
+      this.changeColorMode()
     },
-    changeColorMode(colorMode) {
-      if (colorMode === 'Auto' && browser.devtools.panels.themeName === 'dark')
-        colorMode = 'Dark'
-
-      if (colorMode === 'Dark') {
+    changeColorMode() {
+      if (this.settings.colorTheme === 'dark') {
         document.documentElement.classList.add('mode-dark')
       } else {
         document.documentElement.classList.remove('mode-dark')
       }
+    },
+    clear() {
+      this.entries = []
+      this.active = null
     },
   },
 }

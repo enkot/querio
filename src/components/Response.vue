@@ -1,46 +1,82 @@
 <template>
   <div class="response-block w-full flex flex-col">
-    <div class="flex flex-shrink-0 h-10 items-center px-3">
-      <ButtonGroup
-        v-model="activeView"
-        :items="viewButtons"
-        :activeBgClass="hasError ? 'bg-red-500' : 'bg-green-400'"
-        class="flex-shrink-0"
-      />
-      <div class="text-xs text-gray-550 dark:text-gray-600 ml-3">
-        {{ entry.time.toFixed(2) }} ms
-      </div>
-    </div>
-    <div
-      v-if="entry.response.error"
-      class="flex flex-grow justify-center items-center"
-    >
-      <div class="text-center">
-        <Error class="h-40" />
-        <span
+    <div class="flex justify-between flex-shrink-0 h-10 items-center px-3">
+      <div class="flex flex-shrink-0 items-center">
+        <ButtonGroup
+          v-model="activeView"
+          :items="viewButtons"
+          :activeBgClass="
+            entry.response.isError ? 'bg-red-500' : 'bg-green-400'
+          "
+          class="flex-shrink-0"
+        />
+        <div
           v-if="entry.response.status"
-          class="inline-block text-xl mt-4 text-gray-900 dark:text-gray-100"
+          class="text-xs text-gray-550 dark:text-gray-600 ml-3"
         >
-          {{ entry.response.status }}
-        </span>
-        <span class="inline-block mt-4 text-gray-800 dark:text-gray-500">
-          {{ entry.response.error }}
-        </span>
+          {{ entry.response.status }} {{ entry.response.statusMessage }}
+        </div>
+        <div class="text-xs text-gray-550 dark:text-gray-600 ml-3">
+          {{ entry.time.toFixed(2) }} ms
+        </div>
+      </div>
+      <div
+        v-if="entry.type !== 'GQL'"
+        class="whitespace-no-wrap overflow-auto hide-scrollbar ml-2 text-gray-400 dark:text-gray-700"
+      >
+        {{ entry.response.mimeType }}
       </div>
     </div>
-    <div v-else class="relative flex-grow pl-1 overflow-hidden">
-      <codemirror v-if="errors" v-model="errors" class="h-full" />
-      <codemirror v-else v-model="data" class="h-full" />
+    <div class="relative flex-grow overflow-hidden">
+      <template v-if="activeView === 'data'">
+        <div
+          v-if="entry.response.networkError"
+          class="flex flex-grow justify-center items-center h-full"
+        >
+          <div class="flex flex-col items-center">
+            <ErrorImg class="h-40" />
+            <span class="inline-block mt-4 text-gray-800 dark:text-gray-500">
+              {{ entry.response.networkError }}
+            </span>
+          </div>
+        </div>
+        <div
+          v-else-if="entry.response.parseError"
+          class="flex flex-grow justify-center items-center h-full"
+        >
+          <div class="flex flex-col items-center">
+            <CodeImg class="h-40" />
+            <span class="inline-block mt-4 text-gray-800 dark:text-gray-500">
+              {{ entry.response.mimeType }}
+            </span>
+            <span class="inline-block text-gray-500 dark:text-gray-700">
+              {{ entry.response.parseError }}
+            </span>
+          </div>
+        </div>
+        <template v-else>
+          <codemirror v-if="errors" v-model="errors" class="h-full ml-1" />
+          <codemirror v-else v-model="data" class="h-full ml-1" />
+        </template>
+      </template>
+      <Headers
+        v-else-if="activeView === 'headers'"
+        :items="entry.response.headers"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import Error from '@/assets/error.svg'
+import Headers from '@/components/Headers'
+import ErrorImg from '@/assets/error.svg'
+import CodeImg from '@/assets/code.svg'
 
 export default {
   components: {
-    Error,
+    Headers,
+    ErrorImg,
+    CodeImg,
   },
   props: {
     entry: {
@@ -51,29 +87,31 @@ export default {
     return {
       data: '',
       errors: '',
-      activeView: 'Data',
+      activeView: 'data',
     }
   },
   computed: {
     viewButtons() {
       return [
         {
-          name: 'Data',
+          title: 'Data',
+          name: 'data',
         },
         {
-          name: 'Headers',
+          title: 'Headers',
+          name: 'headers',
         },
       ]
-    },
-    hasError() {
-      return this.entry.response.error || this.entry.response.body.errors
     },
   },
   watch: {
     entry: {
       async handler() {
         if (!this.entry) return
-        const { data, errors } = this.entry.response.body
+        const { type, response } = this.entry
+        const { data, errors } =
+          type === 'GQL' ? response.body : { data: response.body }
+
         this.data = JSON.stringify(data, null, 2)
         this.errors = JSON.stringify(errors, null, 2)
       },

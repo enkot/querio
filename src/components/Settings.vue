@@ -1,5 +1,5 @@
 <template>
-  <BaseModal :open="open" @close="$emit('close')">
+  <Modal :open="open" @close="$emit('close')">
     <div
       class="w-full max-w-sm mx-auto rounded p-6 z-50 shadow-lg bg-white dark:bg-gray-850"
     >
@@ -21,7 +21,7 @@
         </button>
       </div>
     </div>
-  </BaseModal>
+  </Modal>
 </template>
 
 <script>
