@@ -17,17 +17,18 @@
 
 👤 **Enkot**
 
-* Website: https://medium.com/@enkot
-* Twitter: [@https:\/\/twitter.com\/enkot\_](https://twitter.com/https:\/\/twitter.com\/enkot\_)
-* Github: [@enkot](https://github.com/enkot)
+- Website: https://medium.com/@enkot
+- Twitter: https://twitter.com/enkot_
+- Github: [@enkot](https://github.com/enkot)
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/enkot/querio/issues). 
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/enkot/querio/issues).
 
 ## Show your support
 
 Give a ⭐️ if this project helped you!
 
-***
+---
+
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
