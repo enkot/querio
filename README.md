@@ -4,9 +4,6 @@
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
-  <a href="https://twitter.com/enkot_" target="_blank">
-    <img alt="Twitter: https://twitter.com/enkot_" src="https://img.shields.io/twitter/follow/https:\/\/twitter.com\/enkot\_.svg?style=social" />
-  </a>
 </p>
 
 > Inspect GraphQL and raw XHR requests/responses like a Boss 😎
