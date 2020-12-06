@@ -9,7 +9,7 @@
       />
       <div
         v-if="entry"
-        class="whitespace-no-wrap overflow-auto hide-scrollbar ml-2 text-gray-550 dark:text-gray-600"
+        class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-550 dark:text-gray-500"
       >
         {{ entry.request.url }}
       </div>
@@ -29,7 +29,7 @@
               <li class="flex flex-col font-semibold">
                 <div class="text-gray-600">Origin</div>
                 <div
-                  class="mt-1 px-2 py-1.5 rounded bg-gray-200 dark:bg-gray-850 text-gray-700 dark:text-gray-200"
+                  class="mt-1 px-2 py-1.5 rounded bg-gray-100 dark:bg-gray-850 text-gray-700 dark:text-gray-200"
                 >
                   {{ entry.request.origin }}
                 </div>
@@ -37,7 +37,7 @@
               <li class="flex flex-col font-semibold">
                 <div class="text-gray-600">Path</div>
                 <div
-                  class="mt-1 px-2 py-1.5 rounded bg-gray-200 dark:bg-gray-850 text-attribute dark:text-attribute-light"
+                  class="mt-1 px-2 py-1.5 rounded bg-gray-100 dark:bg-gray-850 text-attribute dark:text-attribute-light"
                 >
                   {{ entry.request.pathname }}
                 </div>
@@ -93,7 +93,7 @@ export default {
           name: 'query',
         },
         {
-          title: 'Headers',
+          title: 'HEADERS',
           name: 'headers',
         },
       ]

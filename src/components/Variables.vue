@@ -1,14 +1,14 @@
 <template>
   <div
     class="variables-block flex flex-col"
-    style="max-height: calc(100% - 2.5rem);"
+    style="max-height: calc(100% - 2.5rem)"
   >
     <div
-      class="flex justify-between flex-shrink-0 h-10 items-center px-3 cursor-pointer border-t border-gray-300 dark:border-gray-800 "
+      class="flex justify-between flex-shrink-0 h-10 items-center px-3 group cursor-pointer border-t border-gray-200 dark:border-gray-750"
       @click="toggle"
     >
       <div
-        class="flex items-center flex-shrink-0 text-gray-550 dark:text-gray-600 hover:text-gray-600 dark-hover:text-gray-500 "
+        class="flex items-center flex-shrink-0 text-gray-550 dark:text-gray-600 group-hover:text-gray-800 dark:group-hover:text-gray-400"
       >
         <span class="font-bold uppercase">
           {{ entry.type === 'GQL' ? 'Variables' : 'Body' }}
@@ -18,7 +18,7 @@
       </div>
       <div
         v-if="entry.type !== 'GQL'"
-        class="whitespace-no-wrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-700"
+        class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-600"
       >
         {{ entry.request.mimeType }}
       </div>

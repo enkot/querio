@@ -1,24 +1,36 @@
 <template>
   <Modal :open="open" @close="$emit('close')">
     <div
-      class="w-full max-w-sm mx-auto rounded p-6 z-50 shadow-lg bg-white dark:bg-gray-850"
+      class="w-full max-w-sm mx-auto rounded p-6 z-50 space-y-4 shadow-lg bg-white dark:bg-gray-850"
     >
-      <h2 class="text-sm text-gray-600 dark:text-gray-400">Theme</h2>
-      <div class="flex mt-2 space-x-2">
-        <button
-          v-for="{ title, icon } in colorModes"
-          :key="title"
-          class="flex items-center justify-center flex-1 py-2 px-2 rounded focus:outline-none"
-          :class="
-            currentColorMode === title
-              ? 'text-white bg-indigo-700'
-              : 'text-gray-600 dark:text-gray-500 bg-gray-200 dark:bg-gray-800 hover:text-gray-800 dark-hover:text-white'
-          "
-          @click="changeColorMode(title)"
+      <div>
+        <h2 class="text-sm text-gray-600 dark:text-gray-400">Theme</h2>
+        <ButtonGroup
+          v-model="currentColorMode"
+          v-slot="{ item }"
+          :items="colorModes"
+          size="large"
+          activeBgClass="bg-indigo-700"
+          class="flex flex-shrink-0 w-full mt-2"
+          @input="changeColorMode"
         >
-          <component :is="icon" class="w-4 h-4" />
-          <span class="ml-1">{{ title }}</span>
-        </button>
+          <component :is="item.icon" class="w-3 h-3" />
+          <span class="ml-1">{{ item.title }}</span>
+        </ButtonGroup>
+      </div>
+      <div>
+        <h2 class="text-sm text-gray-600 dark:text-gray-400">Sorting</h2>
+        <ButtonGroup
+          v-model="currentSortOption"
+          v-slot="{ item }"
+          :items="sortOptions"
+          size="large"
+          activeBgClass="bg-gray-500 dark:bg-gray-700"
+          class="flex flex-shrink-0 w-full mt-2"
+          @input="changeSortOption"
+        >
+          <span class="ml-1">{{ item.title }}</span>
+        </ButtonGroup>
       </div>
     </div>
   </Modal>
@@ -55,32 +67,54 @@ export default {
   },
   data() {
     return {
+      sortOptions: [
+        {
+          title: 'Newest first',
+          name: 'newest',
+        },
+        {
+          title: 'Oldest first',
+          name: 'oldest',
+        },
+      ],
       colorModes: [
         {
           icon: 'SparklesIcon',
           title: 'Auto',
+          name: 'Auto',
         },
         {
           icon: 'SunIcon',
           title: 'Light',
+          name: 'Light',
         },
         {
           icon: 'MoonIcon',
           title: 'Dark',
+          name: 'Dark',
         },
       ],
+      currentSortOption: 'newest',
       currentColorMode: 'Auto',
     }
   },
   created() {
     this.currentColorMode = this.settings.colorMode
+    this.currentSortOption = this.settings.sortOption
   },
   methods: {
-    changeColorMode(colorMode) {
-      this.currentColorMode = colorMode
+    changeColorMode(value) {
+      this.currentColorMode = value
+      this.updateSettings('colorMode', value)
+    },
+    changeSortOption(value) {
+      this.currentSortOption = value
+      this.updateSettings('sortOption', value)
+    },
+    updateSettings(name, value) {
       this.$emit('update:settings', {
         ...this.settings,
-        colorMode,
+        [name]: value,
       })
     },
   },

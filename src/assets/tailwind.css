@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: SourceSansPro;
+    font-weight: 400;
+    src: url(/fonts/SourceSansPro-Regular.ttf) format('ttf');
+  }
+  @font-face {
+    font-family: SourceSansPro;
+    font-weight: 600;
+    src: url(/fonts/SourceSansPro-SemiBold.ttf) format('ttf');
+  }
+  @font-face {
+    font-family: SourceSansPro;
+    font-weight: 700;
+    src: url(/fonts/SourceSansPro-Bold.ttf) format('ttf');
+  }
+}
+
 .hide-scrollbar {
   scrollbar-width: none; /* Firefox */
 }
@@ -11,7 +29,8 @@
 .CodeMirror {
   height: 100% !important;
   background: none !important;
-  font-size: 0.95rem;
+  font-size: 13px;
+  font-weight: 500;
 }
 .CodeMirror,
 .CodeMirror-gutters {
@@ -19,23 +38,17 @@
 }
 .CodeMirror-overlayscroll-horizontal div,
 .CodeMirror-overlayscroll-vertical div {
-  @apply bg-gray-300;
+  @apply bg-gray-250;
 }
-.mode-dark .CodeMirror,
-.mode-dark .CodeMirror-gutters {
+.dark .CodeMirror,
+.dark .CodeMirror-gutters {
   @apply bg-gray-900;
 }
-.mode-dark .CodeMirror-overlayscroll-horizontal div,
-.mode-dark .CodeMirror-overlayscroll-vertical div {
+.dark .CodeMirror-overlayscroll-horizontal div,
+.dark .CodeMirror-overlayscroll-vertical div {
   @apply bg-gray-800;
 }
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
   background-color: transparent !important;
-}
-.CodeMirror-widget {
-  @apply inline-block px-2 mx-1 align-middle bg-indigo-600 shadow rounded text-white cursor-pointer;
-}
-.CodeMirror-widget:hover {
-  @apply bg-indigo-700;
 }

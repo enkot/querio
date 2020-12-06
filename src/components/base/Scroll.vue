@@ -2,11 +2,11 @@
   <vue-scroll
     v-if="settings.colorTheme === 'dark'"
     key="dark"
-    :ops="scrollOptionsDark"
+    :ops="options.dark"
   >
     <slot />
   </vue-scroll>
-  <vue-scroll v-else key="light" :ops="scrollOptionsLight">
+  <vue-scroll v-else key="light" :ops="options.light">
     <slot />
   </vue-scroll>
 </template>
@@ -15,36 +15,37 @@
 import { mapState } from 'vuex'
 import tailwind from '../../../tailwind.config'
 
-export default {
-  data() {
-    const { gray } = tailwind.theme.extend.colors
+const { gray } = tailwind.theme.extend.colors
 
-    return {
-      scrollOptionsDark: {
-        bar: {
-          background: gray['800'],
-        },
-      },
-      scrollOptionsLight: {
-        bar: {
-          background: gray['300'],
-        },
-      },
-    }
+export default {
+  props: {
+    scrollingX: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     ...mapState(['settings']),
+    options() {
+      return {
+        dark: {
+          bar: {
+            background: gray['800'],
+          },
+          scrollPanel: {
+            scrollingX: this.scrollingX,
+          },
+        },
+        light: {
+          bar: {
+            background: gray['250'],
+          },
+          scrollPanel: {
+            scrollingX: this.scrollingX,
+          },
+        },
+      }
+    },
   },
-  // methods: {
-  //   refresh() {
-  //     this.$refs.scroll && this.$refs.scroll.refresh()
-  //   },
-  // },
-  // watch: {
-  //   async 'settings.colorTheme'() {
-  //     await this.$nextTick()
-  //     this.refresh()
-  //   },
-  // },
 }
 </script>

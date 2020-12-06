@@ -1,70 +1,59 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  future: {
-    // removeDeprecatedGapUtilities: true,
-    // purgeLayersByDefault: true,
-  },
-  experimental: {
-    applyComplexClasses: true,
-  },
-  purge: {
-    options: {
-      whitelist: ['mode-dark'],
-    },
-  },
+  purge: [
+    './public/**/*.html',
+    './src/**/*.html',
+    './src/**/*.vue',
+    './src/**/*.js',
+  ],
+  darkMode: 'class',
   theme: {
-    customForms: theme => ({
-      sm: {
-        'input, textarea, multiselect, select': {
-          fontSize: theme('fontSize.xs'),
-          padding: `${theme('spacing.1')} ${theme('spacing.2')}`,
-        },
-      },
-    }),
+    fontFamily: {
+      sans: ['SourceSansPro', 'Roboto', 'Arial', 'sans-serif'],
+    },
     extend: {
       spacing: {
         '1.5': '0.375rem',
       },
       fontSize: {
-        tiny: '.6rem',
+        tiny: ['.6rem', '0.8rem'],
       },
       colors: {
         gray: {
-          ...colors.gray,
-          '250': '#E7ECF0',
-          '550': '#8C97A6',
-          '825': '#282F40',
-          '850': '#212735',
+          ...colors.coolGray,
+          150: '#EBEDF0',
+          250: '#DADCE1',
+          550: '#616876',
+          750: '#242D3D',
+          825: '#181F2E',
+          850: '#181F2E',
         },
+        rose: colors.rose,
         operator: {
-          default: '#df51a2',
+          DEFAULT: '#df51a2',
           light: '#ff80c9',
         },
         atom: {
-          default: '#925ddc',
+          DEFAULT: '#925ddc',
           light: '#c59cff',
         },
         property: {
-          default: '#1f72a0',
+          DEFAULT: '#1f72a0',
           light: '#68c0f0',
         },
         attribute: {
-          default: '#1E943C',
+          DEFAULT: '#1E943C',
           light: '#67E286',
         },
       },
     },
   },
   variants: {
-    backgroundColor: ['dark', 'dark-hover', 'hover'],
-    borderColor: ['dark', 'hover', 'dark-focus'],
-    divideColor: ['dark', 'hover', 'dark-focus'],
-    textColor: ['dark', 'dark-hover', 'hover'],
-    borderRadius: ['responsive', 'first', 'last'],
+    extend: {
+      borderRadius: ['responsive', 'first', 'last'],
+      display: ['group-hover'],
+    },
   },
-  plugins: [
-    require('tailwindcss-dark-mode')(),
-    require('@tailwindcss/custom-forms'),
-  ],
+  plugins: [require('@tailwindcss/forms')],
 }

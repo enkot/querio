@@ -12,17 +12,17 @@
         />
         <div
           v-if="entry.response.status"
-          class="text-xs text-gray-550 dark:text-gray-600 ml-3"
+          class="text-xs text-gray-550 dark:text-gray-500 ml-3"
         >
           {{ entry.response.status }} {{ entry.response.statusMessage }}
         </div>
-        <div class="text-xs text-gray-550 dark:text-gray-600 ml-3">
+        <div class="text-xs text-gray-550 dark:text-gray-500 ml-3">
           {{ entry.time.toFixed(2) }} ms
         </div>
       </div>
       <div
         v-if="entry.type !== 'GQL'"
-        class="whitespace-no-wrap overflow-auto hide-scrollbar ml-2 text-gray-400 dark:text-gray-700"
+        class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-600"
       >
         {{ entry.response.mimeType }}
       </div>
@@ -41,7 +41,7 @@
           </div>
         </div>
         <div
-          v-else-if="entry.response.parseError"
+          v-else-if="parseError"
           class="flex flex-grow justify-center items-center h-full"
         >
           <div class="flex flex-col items-center">
@@ -50,7 +50,7 @@
               {{ entry.response.mimeType }}
             </span>
             <span class="inline-block text-gray-500 dark:text-gray-700">
-              {{ entry.response.parseError }}
+              {{ parseError }}
             </span>
           </div>
         </div>
@@ -88,17 +88,18 @@ export default {
       data: '',
       errors: '',
       activeView: 'data',
+      parseError: null,
     }
   },
   computed: {
     viewButtons() {
       return [
         {
-          title: 'Data',
+          title: 'DATA',
           name: 'data',
         },
         {
-          title: 'Headers',
+          title: 'HEADERS',
           name: 'headers',
         },
       ]
@@ -108,12 +109,17 @@ export default {
     entry: {
       async handler() {
         if (!this.entry) return
-        const { type, response } = this.entry
-        const { data, errors } =
-          type === 'GQL' ? response.body : { data: response.body }
 
-        this.data = JSON.stringify(data, null, 2)
-        this.errors = JSON.stringify(errors, null, 2)
+        this.parseError = null
+
+        try {
+          const { data, errors } = await this.entry.response.getResponse()
+
+          this.data = JSON.stringify(data, null, 2)
+          this.errors = JSON.stringify(errors, null, 2)
+        } catch (e) {
+          this.parseError = e.message
+        }
       },
       immediate: true,
     },
