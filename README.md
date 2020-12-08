@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to Querio 👋</h1>
 
-![alt text](https://github.com/enkot/querio/blob/main/public/promo.png?raw=true)
+![alt text](https://github.com/enkot/querio/blob/main/public/promo-lg.png?raw=true)
 
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
