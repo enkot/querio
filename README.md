@@ -1,4 +1,7 @@
 <h1 align="center">Welcome to Querio 👋</h1>
+
+![alt text](https://github.com/enkot/querio/blob/main/public/promo.png?raw=true)
+
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
@@ -8,7 +11,7 @@
 
 > Inspect GraphQL and raw XHR requests/responses like a Boss 😎
 
-### 🏠 [Homepage](querio.app)
+### 🏠 [Homepage](https://querio.app)
 
 ## Author
 
