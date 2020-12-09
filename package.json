@@ -1,7 +1,7 @@
 {
   "name": "querio",
-  "version": "0.1.0",
-  "description": "Missing browser DevTool requests inspector.",
+  "version": "0.1.1",
+  "description": "Missing DevTools network inspector for GraphQL, Fetch and XHR requests",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service build --mode development --watch",

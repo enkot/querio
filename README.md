@@ -9,7 +9,7 @@
   </a>
 </p>
 
-> Inspect GraphQL and raw XHR requests/responses like a Boss 😎
+> Missing DevTools network inspector. Inspect GraphQL and raw XHR requests/responses like a Boss 😎
 
 ### 🏠 [Homepage](https://querio.app)
 
