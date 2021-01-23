@@ -52,3 +52,39 @@
 .CodeMirror-gutter-filler {
   background-color: transparent !important;
 }
+
+.splitpanes__splitter {
+  position: relative;
+}
+.splitpanes__splitter:before {
+  display: block;
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: opacity 0.4s;
+  opacity: 0;
+  z-index: 10;
+}
+.splitpanes__splitter:before {
+  @apply bg-gray-150;
+}
+.dark .splitpanes__splitter:before {
+  @apply bg-gray-750;
+}
+.splitpanes__splitter:hover:before {
+  opacity: 1;
+}
+.splitpanes--vertical > .splitpanes__splitter:before {
+  left: -3px;
+  right: -3px;
+  height: 100%;
+}
+.splitpanes--horizontal > .splitpanes__splitter:before {
+  top: -3px;
+  bottom: -3px;
+  width: 100%;
+}
+.splitpanes .splitpanes__pane {
+  transition: none;
+}

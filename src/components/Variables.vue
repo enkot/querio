@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="variables-block flex flex-col"
-    style="max-height: calc(100% - 2.5rem)"
-  >
+  <div class="variables-block flex flex-col">
     <div
       class="flex justify-between flex-shrink-0 h-10 items-center px-3 group cursor-pointer border-t border-gray-200 dark:border-gray-750"
       @click="toggle"
@@ -23,7 +20,7 @@
         {{ entry.request.mimeType }}
       </div>
     </div>
-    <div v-if="entry && show" class="relative flex-grow overflow-hidden">
+    <div v-if="entry" class="relative flex-grow overflow-hidden">
       <Scroll v-if="params">
         <Params :items="params" class="px-3 pb-3" />
       </Scroll>
@@ -36,6 +33,8 @@
 import Params from '@/components/Params'
 import ShevronUp from '@/assets/shevron-up.svg'
 import ShevronDown from '@/assets/shevron-down.svg'
+
+const HEIGHT_COLLAPSED = 2.5 * 16 // 2.5rem
 
 export default {
   components: {
@@ -62,12 +61,23 @@ export default {
   data() {
     return {
       show: false,
+      toggled: false,
+      resizeObserver: null,
     }
+  },
+  mounted() {
+    this.observeHeight()
   },
   methods: {
     toggle() {
       this.show = !this.show
-      this.$emit('toggled')
+      this.$emit('toggled', this.show)
+    },
+    observeHeight() {
+      this.resizeObserver = new ResizeObserver(([entry]) => {
+        this.show = entry.contentRect.height !== HEIGHT_COLLAPSED
+      })
+      this.resizeObserver.observe(this.$el)
     },
   },
 }

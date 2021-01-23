@@ -13,48 +13,70 @@
         <CogIcon class="h-5 w-5 focus:outline-none" v-tooltip="'Settings'" />
       </button>
     </div>
-    <div class="flex-grow grid grid-cols-12 grid-rows-6 w-full overflow-hidden">
-      <div
-        class="col-span-4 md:col-span-2 row-span-6 bg-gray-50 dark:bg-gray-850 border-r border-gray-200 dark:border-gray-750 overflow-hidden"
+    <splitpanes
+      class="flex flex-row flex-grow w-full overflow-hidden"
+      :push-other-panes="false"
+    >
+      <pane
+        min-size="18"
+        :size="$mq | mq({ md: 35, lg: 18 })"
+        class="bg-gray-50 dark:bg-gray-850 border-r border-gray-200 dark:border-gray-750 overflow-hidden"
       >
         <List v-model="activeId" :entries="entries" @clear="clear" />
-      </div>
-      <div
-        v-if="!active"
-        class="flex justify-center items-center row-span-6 md:row-span-6 col-span-8 md:col-span-10"
-      >
-        <Ghost class="h-40" />
-      </div>
-      <template v-else>
+      </pane>
+      <pane :size="$mq | mq({ md: 65, lg: 82 })" min-size="50">
         <div
-          class="grid grid-rows-1 row-span-3 md:row-span-6 col-span-8 md:col-span-4 bg-white dark:bg-gray-900 overflow-hidden"
+          v-if="!active"
+          class="flex justify-center items-center row-span-6 md:row-span-6 col-span-8 md:col-span-10 h-full"
         >
-          <div
-            class="flex flex-col overflow-hidden border-b md:border-none border-gray-200 dark:border-gray-750"
+          <Ghost class="h-40" />
+        </div>
+        <splitpanes
+          v-else
+          :horizontal="$mq | mq({ md: true, lg: false })"
+          class="flex flex-col md:flex-row"
+          :push-other-panes="false"
+        >
+          <pane
+            min-size="30"
+            size="50"
+            class="bg-white dark:bg-gray-900 overflow-hidden"
           >
-            <Query
-              ref="query"
+            <splitpanes
+              horizontal
+              class="flex flex-col overflow-hidden border-b md:border-none border-gray-200 dark:border-gray-750"
+              :push-other-panes="false"
+              @resized="resized"
+            >
+              <pane :size="100 - variablesSize" style="min-height: 2.5rem">
+                <Query
+                  ref="query"
+                  :entry="active"
+                  class="flex-grow overflow-hidden h-full"
+                />
+              </pane>
+              <pane
+                v-if="showVariables"
+                :size="variablesSize"
+                style="min-height: 2.5rem"
+              >
+                <Variables
+                  :entry="active"
+                  class="overflow-hidden h-full"
+                  @toggled="toggleVariables"
+                />
+              </pane>
+            </splitpanes>
+          </pane>
+          <pane class="bg-white dark:bg-gray-900 overflow-hidden" min-size="30">
+            <Response
               :entry="active"
-              class="flex-grow overflow-hidden"
+              class="md:border-l border-gray-200 dark:border-gray-750 overflow-hidden h-full"
             />
-            <Variables
-              v-if="active.type !== 'GET'"
-              :entry="active"
-              class="flex-shrink-0 overflow-hidden"
-              @toggled="refresh"
-            />
-          </div>
-        </div>
-        <div
-          class="grid grid-rows-1 row-span-3 md:row-span-6 col-span-8 md:col-span-6 bg-white dark:bg-gray-900 overflow-hidden"
-        >
-          <Response
-            :entry="active"
-            class="md:border-l border-gray-200 dark:border-gray-750 overflow-hidden"
-          />
-        </div>
-      </template>
-    </div>
+          </pane>
+        </splitpanes>
+      </pane>
+    </splitpanes>
     <Settings
       v-model="settingsOpened"
       :settings="settings"
@@ -66,6 +88,9 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import { Splitpanes, Pane } from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
+
 import { isGraphQL, isHTTP, parseGQLEntry, parseHTTPEntry } from '@/utils'
 
 import List from '@/components/List'
@@ -81,6 +106,8 @@ import CogIcon from '@/assets/cog.svg'
 export default {
   name: 'App',
   components: {
+    Splitpanes,
+    Pane,
     List,
     Query,
     Variables,
@@ -95,23 +122,28 @@ export default {
       entries: [],
       activeId: null,
       settingsOpened: false,
+      variablesSize: 0,
     }
   },
   computed: {
-    ...mapState(['clearedAt', 'settings']),
+    ...mapState(['lastState', 'settings']),
     active() {
       return this.entries.find((item) => item && item.id === this.activeId)
+    },
+    showVariables() {
+      return this.active.type !== 'GET'
     },
   },
   created() {
     this.changeSettings(this.settings)
+    this.variablesSize = this.lastState.variablesOpened ? 50 : 0
     browser.devtools.network.getHAR((harLog) =>
       harLog.entries.forEach(this.addEntry)
     )
     browser.devtools.network.onRequestFinished.addListener(this.addEntry)
   },
   methods: {
-    ...mapMutations(['setClearedAt', 'setSettings']),
+    ...mapMutations(['setLastState', 'setSettings']),
     async addEntry(req) {
       if (isGraphQL(req)) {
         const entries = await parseGQLEntry(req)
@@ -126,13 +158,22 @@ export default {
     pushEntry(entry) {
       if (
         !entry ||
-        (entry && this.clearedAt && this.clearedAt > entry.timestamp)
+        (entry &&
+          this.lastState.clearedAt &&
+          this.lastState.clearedAt > entry.timestamp)
       )
         return
 
       this.entries.push(entry)
     },
-    async refresh() {
+    resized([, item]) {
+      if (item) this.variablesSize = item.size
+    },
+    async toggleVariables(show) {
+      this.variablesSize = show ? 50 : 0
+      this.setLastState({
+        variablesOpened: show,
+      })
       await this.$nextTick()
       if (this.$refs.query) this.$refs.query.refresh()
     },
@@ -150,7 +191,9 @@ export default {
     clear() {
       this.entries = []
       this.activeId = null
-      this.setClearedAt(Date.now())
+      this.setLastState({
+        clearedAt: Date.now(),
+      })
     },
   },
 }

@@ -9,6 +9,7 @@ import 'codemirror/addon/scroll/simplescrollbars.js'
 import VueCodemirror from 'vue-codemirror'
 import Vuescroll from 'vuescroll'
 import VTooltip from 'v-tooltip'
+import VueMq from 'vue-mq'
 
 import App from './App.vue'
 import store from '@/store'
@@ -19,7 +20,13 @@ import '@/assets/tailwind.css'
 import '@/assets/custom-dracula.css'
 import '@/assets/tooltip.css'
 import '@/components/base'
-
+import defaultConfig from 'tailwindcss/defaultConfig'
+Vue.use(VueMq, {
+  breakpoints: {
+    md: parseInt(defaultConfig.theme.screens.md),
+    lg: Infinity,
+  },
+})
 Vue.use(VTooltip, {
   defaultBoundariesElement: document.body,
   defaultPlacement: 'bottom',

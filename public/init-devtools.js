@@ -1,5 +1,5 @@
 chrome.devtools.panels.create(
-  chrome.i18n.getMessage('extName'),
+  'Querio',
   '../src/assets/logo.png',
   'devtools.html'
 )

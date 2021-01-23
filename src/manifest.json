@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_extName__",
   "homepage_url": "http://localhost:8080/",
-  "description": "Missing DevTools network inspector for GraphQL, Fetch and XHR requests",
+  "description": "Missing DevTools network inspector for GraphQL and XHR requests",
   "default_locale": "en",
   "permissions": ["activeTab"],
   "icons": {

@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Lockr from 'lockr'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
-Lockr.prefix = 'querio_'
-
 export default new Vuex.Store({
   state: {
-    clearedAt: Lockr.get('clearedAt') || null,
-    settings: Lockr.get('settings') || {
+    lastState: {
+      clearedAt: null,
+      activeView: 'ALL',
+      variablesOpened: false,
+    },
+    settings: {
       colorMode: 'Auto',
       colorTheme: 'dark',
       sortOption: 'newest',
@@ -26,21 +28,28 @@ export default new Vuex.Store({
   mutations: {
     setSettings(state, settings) {
       state.settings = {
+        ...state.settings,
         ...settings,
-        colorTheme:
+      }
+
+      if (settings.colorMode)
+        state.settings.colorTheme =
           settings.colorMode === 'Auto'
             ? browser.devtools.panels.themeName === 'dark'
               ? 'dark'
               : 'light'
-            : settings.colorMode.toLowerCase(),
-      }
-      Lockr.set('settings', state.settings)
+            : settings.colorMode.toLowerCase()
     },
-    setClearedAt(state, timestamp) {
-      state.clearedAt = timestamp
-      Lockr.set('clearedAt', timestamp)
+    setLastState(state, lastState) {
+      state.lastState = {
+        ...state.lastState,
+        ...lastState,
+      }
     },
   },
-  actions: {},
-  modules: {},
+  plugins: [
+    createPersistedState({
+      paths: ['lastState', 'settings'],
+    }),
+  ],
 })

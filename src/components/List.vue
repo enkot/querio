@@ -86,10 +86,15 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import fuzzysearch from 'fuzzysearch'
 
 import BanIcon from '@/assets/ban-icon.svg'
+
+const ACTIVE_METHODS = {
+  GQL: ['GQL'],
+  XHR: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+}
 
 export default {
   components: {
@@ -128,7 +133,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['settings', 'typeColors']),
+    ...mapState(['settings', 'lastState', 'typeColors']),
     filteredEntries() {
       return this.entries
         .filter((entry) => entry)
@@ -146,21 +151,29 @@ export default {
               request.name.toLowerCase()
             )
         })
-        .filter(({ type }) => {
-          if (this.activeView === 'GQL' && type !== 'GQL') return
-          if (this.activeView === 'XHR' && type === 'GQL') return
-          return true
-        })
+        .filter(
+          ({ type }) =>
+            this.activeView === 'ALL' ||
+            ACTIVE_METHODS[this.activeView].includes(type)
+        )
         .sort((a, b) =>
           this.settings.sortOption === 'newest' ? b.id - a.id : a.id - b.id
         )
     },
   },
+  created() {
+    this.activeView = this.lastState.activeView
+  },
   methods: {
+    ...mapMutations(['setSettings', 'setLastState']),
     changeView() {
       const hasTarget = this.filteredEntries.find(
         (item) => item.id === this.value
       )
+
+      this.setLastState({
+        activeView: this.activeView,
+      })
 
       if (!hasTarget)
         this.$emit(
