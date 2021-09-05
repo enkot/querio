@@ -19,7 +19,7 @@
         <codemirror
           v-if="entry.type === 'GQL'"
           ref="cmEditor"
-          :value="query"
+          :value="showPretified ?  pretifiedQuery : query"
           :options="cmOptions"
           class="h-full ml-1"
         />
@@ -49,6 +49,12 @@
             </ul>
           </div>
         </Scroll>
+        <ToggleButton
+          className="absolute bottom-4 right-1"
+          :initStatus=false
+          text="Pretify"
+          @onClick="toggleQueryView"
+        />
       </template>
       <Headers
         v-else-if="activeView === 'headers'"
@@ -60,14 +66,18 @@
 
 <script>
 import { mapState } from 'vuex'
-
+import {print, parse} from 'graphql'
 import Headers from '@/components/Headers'
 import Params from '@/components/Params'
+import ButtonGroup from './base/ButtonGroup.vue'
+import ToggleButton from './base/ToggleButton.vue'
 
 export default {
   components: {
     Headers,
     Params,
+    ButtonGroup,
+    ToggleButton
   },
   props: {
     entry: {
@@ -86,6 +96,13 @@ export default {
             value,
           }))
     },
+    pretifiedQuery() {
+      const{ type } = this.entry
+      if (type === 'GQL') {
+        return print(parse(this.query))
+      }
+      return ''
+    },
     viewButtons() {
       return [
         {
@@ -102,6 +119,7 @@ export default {
   data() {
     return {
       activeView: 'query',
+      showPretified: false,
       cmOptions: {
         mode: 'graphql',
       },
@@ -111,6 +129,9 @@ export default {
     refresh() {
       this.$refs.cmEditor && this.$refs.cmEditor.codemirror.refresh()
     },
+    toggleQueryView(isActive) {
+      this.showPretified = isActive
+    }
   },
 }
 </script>
