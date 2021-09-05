@@ -50,6 +50,7 @@
           </div>
         </Scroll>
         <ToggleButton
+          v-if="entry.type === 'GQL'"
           className="absolute bottom-4 right-1"
           :initStatus=false
           text="Pretify"
