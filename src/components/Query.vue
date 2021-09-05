@@ -102,7 +102,7 @@ export default {
       if (type === 'GQL') {
         return print(parse(this.query))
       }
-      return ''
+      return this.query
     },
     viewButtons() {
       return [
