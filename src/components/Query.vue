@@ -19,7 +19,7 @@
         <codemirror
           v-if="entry.type === 'GQL'"
           ref="cmEditor"
-          :value="showPretified ?  pretifiedQuery : query"
+          :value="showPretified ? pretifiedQuery : query"
           :options="cmOptions"
           class="h-full ml-1"
         />
@@ -51,10 +51,9 @@
         </Scroll>
         <ToggleButton
           v-if="entry.type === 'GQL'"
-          className="absolute bottom-4 right-1"
-          :initStatus=false
-          text="Pretify"
-          @onClick="toggleQueryView"
+          v-model="showPretified"
+          class="absolute bottom-2 right-2 p-1"
+          v-tooltip.top="'Prettify'" 
         />
       </template>
       <Headers
@@ -99,9 +98,11 @@ export default {
     },
     pretifiedQuery() {
       const{ type } = this.entry
+
       if (type === 'GQL') {
         return print(parse(this.query))
       }
+
       return this.query
     },
     viewButtons() {
@@ -120,7 +121,7 @@ export default {
   data() {
     return {
       activeView: 'query',
-      showPretified: false,
+      showPretified: true,
       cmOptions: {
         mode: 'graphql',
       },
@@ -129,9 +130,6 @@ export default {
   methods: {
     refresh() {
       this.$refs.cmEditor && this.$refs.cmEditor.codemirror.refresh()
-    },
-    toggleQueryView(isActive) {
-      this.showPretified = isActive
     }
   },
 }
