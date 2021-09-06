@@ -15,6 +15,7 @@ module.exports = {
     extend: {
       spacing: {
         '1.5': '0.375rem',
+        '3.5': '0.875rem',
       },
       fontSize: {
         tiny: ['.6rem', '0.8rem'],

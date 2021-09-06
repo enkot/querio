@@ -39,9 +39,6 @@ export default {
       type: String,
       default: 'normal',
     },
-  },
-  watch: {
-    items() {},
-  },
+  }
 }
 </script>

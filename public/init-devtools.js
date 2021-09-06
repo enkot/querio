@@ -1,5 +1,5 @@
 chrome.devtools.panels.create(
   'Querio',
-  '../src/assets/logo.png',
+  '/icons/16.png',
   'devtools.html'
 )
