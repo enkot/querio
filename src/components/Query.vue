@@ -52,7 +52,7 @@
         <ToggleButton
           v-if="entry.type === 'GQL'"
           v-model="showPretified"
-          class="absolute bottom-2 right-2 p-1"
+          class="absolute bottom-2 right-2 p-1 z-10"
           v-tooltip.top="'Prettify'" 
         />
       </template>

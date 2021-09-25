@@ -4,7 +4,6 @@
   "homepage_url": "http://localhost:8080/",
   "description": "Missing DevTools network inspector for GraphQL and XHR requests",
   "default_locale": "en",
-  "permissions": ["activeTab"],
   "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",
