@@ -11,14 +11,13 @@
     <div
       v-if="!entries.length"
       class="flex flex-grow justify-center items-center p-4 h-full text-center text-gray-600"
-    >
-      Waiting for requests...
-    </div>
+    >Waiting for requests...</div>
     <div
       v-else-if="!filteredEntries.length"
       class="flex flex-grow justify-center items-center p-4 h-full text-center text-gray-600"
     >
-      No results found <span v-if="keyword">for "{{ keyword }}"</span>
+      No results found
+      <span v-if="keyword">for "{{ keyword }}"</span>
     </div>
     <Scroll v-else :scrollingX="false">
       <ul class="block flex-grow pt-1">
@@ -39,28 +38,13 @@
           @click="$emit('input', entry.id)"
         >
           <div
-            class="absolute left-0 h-full w-0.5"
-            :class="[
-              `bg-${typeColors[entry.type]}`,
-              value === entry.id ? 'block' : 'hidden group-hover:block',
-            ]"
-          ></div>
-          <span class="font-semibold">{{ entry.request.name }}</span>
-          <span class="font-normal opacity-50">
-            {{ entry.request.queryString }}
+            class="flex justify-center items-center h-5 w-5 rounded-sm uppercase font-semibold flex-shrink-0"
+            :class="value === entry.id ? `text-white bg-${getColor(entry)}` : `bg-gray-200 dark:bg-gray-750 group-hover:bg-${getColor(entry)} text-gray-500 dark:text-gray-400 group-hover:text-white`"
+          >{{ entry.type === 'GQL' ? entry.request.operationType[0] : entry.type[0] }}</div>
+          <span class="font-semibold ml-2">
+            {{ entry.type === 'GQL' && !entry.request.name ? entry.request.operations.join(',') : entry.request.name }}
           </span>
-          <template v-if="entry.type === 'GQL'">
-            <span class="mr-1">:</span>
-            <span
-              v-for="(operation, i) in entry.request.operations"
-              :key="operation"
-            >
-              {{
-                operation +
-                (i === entry.request.operations.length - 1 ? '' : ',')
-              }}
-            </span>
-          </template>
+          <span class="font-normal opacity-50">{{ entry.request.queryString }}</span>
         </li>
       </ul>
     </Scroll>
@@ -135,6 +119,7 @@ export default {
   computed: {
     ...mapState(['settings', 'lastState', 'typeColors']),
     filteredEntries() {
+      console.log(this.entries)
       return this.entries
         .filter((entry) => entry)
         .filter(({ type, request }) => {
@@ -166,6 +151,9 @@ export default {
   },
   methods: {
     ...mapMutations(['setSettings', 'setLastState']),
+    getColor(entry) {
+      return this.typeColors[entry.type === 'GQL' ? entry.request.operationType.toUpperCase() : entry.type]
+    },
     changeView() {
       const hasTarget = this.filteredEntries.find(
         (item) => item.id === this.value

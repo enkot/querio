@@ -1,24 +1,28 @@
 <template>
-  <div class="response-block w-full flex flex-col">
+  <div class="response-block w-full flex flex-col group">
     <div class="flex justify-between flex-shrink-0 h-10 items-center px-3">
-      <div class="flex flex-shrink-0 items-center">
-        <ButtonGroup
-          v-model="activeView"
-          :items="viewButtons"
-          :activeBgClass="
-            entry.response.isError ? 'bg-red-500' : 'bg-green-400'
-          "
-          class="flex-shrink-0"
-        />
-        <div
-          v-if="entry.response.status"
-          class="text-xs text-gray-550 dark:text-gray-500 ml-3"
-        >
-          {{ entry.response.status }} {{ entry.response.statusMessage }}
+      <div class="flex justify-between w-full">
+        <div class="flex flex-shrink-0 items-center">
+          <ButtonGroup
+            v-model="activeView"
+            :items="viewButtons"
+            :activeBgClass="
+              entry.response.isError ? 'bg-red-500' : 'bg-green-400'
+            "
+            class="flex-shrink-0"
+          />
+          <div
+            v-if="entry.response.status"
+            class="text-xs text-gray-550 dark:text-gray-500 ml-3"
+          >
+            {{ entry.response.status }} {{ entry.response.statusMessage }}
+          </div>
+          <div class="text-xs text-gray-550 dark:text-gray-500 ml-3">
+            {{ entry.time.toFixed(2) }} ms
+          </div>
+          
         </div>
-        <div class="text-xs text-gray-550 dark:text-gray-500 ml-3">
-          {{ entry.time.toFixed(2) }} ms
-        </div>
+        <CopyButton :value="data" />
       </div>
       <div
         v-if="entry.type !== 'GQL'"
@@ -55,8 +59,7 @@
           </div>
         </div>
         <template v-else>
-          <codemirror v-if="errors" v-model="errors" class="h-full ml-1" />
-          <codemirror v-else v-model="data" class="h-full ml-1" />
+          <codemirror v-model="data" class="h-full ml-1" />
         </template>
       </template>
       <Headers
@@ -69,14 +72,16 @@
 
 <script>
 import Headers from '@/components/Headers'
+import CopyButton from './base/CopyButton.vue'
 import ErrorImg from '@/assets/error.svg'
 import CodeImg from '@/assets/code.svg'
 
 export default {
   components: {
     Headers,
+    CopyButton,
     ErrorImg,
-    CodeImg,
+    CodeImg
   },
   props: {
     entry: {
@@ -86,7 +91,6 @@ export default {
   data() {
     return {
       data: '',
-      errors: '',
       activeView: 'data',
       parseError: null,
     }
@@ -115,8 +119,7 @@ export default {
         try {
           const { data, errors } = await this.entry.response.getResponse()
 
-          this.data = JSON.stringify(data, null, 2)
-          this.errors = JSON.stringify(errors, null, 2)
+          this.data = JSON.stringify(errors || data, null, 2)
         } catch (e) {
           this.parseError = e.message
         }

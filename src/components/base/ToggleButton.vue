@@ -1,23 +1,22 @@
 <template>
-  <button
-    @click="$emit('change', !active)"
-    class="flex items-center p-1 font-bold uppercase focus:outline-none rounded-sm text-tiny leading-none bg-gray-150 text-gray-500 hover:bg-gray-200 hover:text-gray-400 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-750 dark:hover:text-gray-300 group"
-  >
+  <Button @click="$emit('change', !active)">
     <span :class="active ? 'text-green-500' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-300'">
       <slot name="icon">
-        <Check class="h-3.5 w-3.5" />
+        <Check class="h-4 w-4" />
       </slot>
     </span>
     {{ text }}
-  </button>
+  </Button>
 </template>
 
 <script>
+import Button from './Button.vue'
 import Check from '@/assets/check.svg'
 
 export default {
   name: "ToggleButton",
   components: {
+    Button,
     Check
   },
   model: {

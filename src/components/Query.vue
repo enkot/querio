@@ -1,25 +1,28 @@
 <template>
   <div class="query-block flex flex-col">
-    <div class="flex flex-shrink-0 h-10 items-center px-3 overflow-hidden">
-      <ButtonGroup
-        v-model="activeView"
-        :items="viewButtons"
-        :activeBgClass="`bg-${typeColors[entry.type]}`"
-        class="flex-shrink-0"
-      />
-      <div
-        v-if="entry"
-        class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-550 dark:text-gray-500"
-      >
-        {{ entry.request.url }}
+    <div class="flex justify-between flex-shrink-0 h-10 items-center px-3 overflow-hidden">
+      <div class="flex items-center">
+        <ButtonGroup
+          v-model="activeView"
+          :items="viewButtons"
+          :activeBgClass="`bg-${typeColors[entry.type]}`"
+          class="flex-shrink-0"
+        />
+        <div
+          v-if="entry"
+          class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-550 dark:text-gray-500"
+        >
+          {{ entry.request.url }}
+        </div>
       </div>
+      <CopyButton :value="query" />
     </div>
     <div v-if="entry" class="relative flex-grow overflow-hidden">
       <template v-if="activeView === 'query'">
         <codemirror
           v-if="entry.type === 'GQL'"
           ref="cmEditor"
-          :value="showPretified ? pretifiedQuery : query"
+          :value="query"
           :options="cmOptions"
           class="h-full ml-1"
         />
@@ -52,7 +55,7 @@
         <ToggleButton
           v-if="entry.type === 'GQL'"
           v-model="showPretified"
-          class="absolute bottom-2 right-2 p-1 z-10"
+          class="absolute bottom-2 right-3 p-1 z-10"
           v-tooltip.top="'Prettify'" 
         />
       </template>
@@ -71,13 +74,15 @@ import Headers from '@/components/Headers'
 import Params from '@/components/Params'
 import ButtonGroup from './base/ButtonGroup.vue'
 import ToggleButton from './base/ToggleButton.vue'
+import CopyButton from './base/CopyButton.vue'
 
 export default {
   components: {
     Headers,
     Params,
     ButtonGroup,
-    ToggleButton
+    ToggleButton,
+    CopyButton,
   },
   props: {
     entry: {
@@ -89,21 +94,14 @@ export default {
     query() {
       const { type, request } = this.entry
 
-      return type === 'GQL'
-        ? request.query.replace(/\n$/, '')
-        : Object.entries(request.query).map(([name, value]) => ({
-            name,
-            value,
-          }))
-    },
-    pretifiedQuery() {
-      const{ type } = this.entry
-
       if (type === 'GQL') {
-        return print(parse(this.query))
+        return this.showPretified ? print(parse(request.query)) : request.query.replace(/\n$/, '')
       }
 
-      return this.query
+      return Object.entries(request.query).map(([name, value]) => ({
+        name,
+        value,
+      }))
     },
     viewButtons() {
       return [

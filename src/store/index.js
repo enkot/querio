@@ -18,10 +18,12 @@ export default new Vuex.Store({
     },
     typeColors: {
       GQL: 'pink-500', // bg-pink-500 text-pink-500
+      QUERY: 'green-500', // bg-purple-500 text-purple-500
+      MUTATION: 'purple-500', // bg-indigo-500 text-indigo-500
       GET: 'blue-500', // bg-blue-500 text-blue-500
-      POST: 'purple-500', // bg-purple-500 text-purple-500
-      PUT: 'purple-500', // bg-purple-500 text-purple-500
-      PATCH: 'purple-500', // bg-purple-500 text-purple-500
+      POST: 'indigo-500', // bg-purple-500 text-purple-500
+      PUT: 'indigo-500', // bg-purple-500 text-purple-500
+      PATCH: 'indigo-500', // bg-purple-500 text-purple-500
       DELETE: 'rose-500', // bg-rose-500 text-rose-500
     },
   },

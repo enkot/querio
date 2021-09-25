@@ -68,10 +68,9 @@ function parseOperation(definition) {
 
 function internalParse(requestData) {
   const { definitions } = requestData
+  console.log('definitions', definitions)
   return definitions.map(definition => ({
-    name: definition.name
-      ? definition.name.value
-      : definition.operation || 'request',
+    name: definition.name && definition.name.value,
     kind: definition.kind,
     type: definition.operation,
     operations: definition.selectionSet.selections.map(operation => ({
@@ -235,12 +234,13 @@ export function parseGQLEntry(entry) {
 
   return parsedQueries.map((parsedQuery, i) => {
     const { data, query, variables } = parsedQuery
-    const { name, operations } = data[i]
+    const { name, type, operations } = data[i]
     const getResponse = () =>
       getContent(entry).then(body => (Array.isArray(body) ? body[i] : body))
 
     return formatResult('GQL', name, entry, getResponse, {
       operations: operations.map(item => item.name),
+      operationType: type,
       query,
       variables,
     })

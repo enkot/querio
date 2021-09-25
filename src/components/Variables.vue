@@ -13,11 +13,14 @@
         <ShevronDown v-if="show" class="h-5" />
         <ShevronUp v-else class="h-5" />
       </div>
-      <div
-        v-if="entry.type !== 'GQL'"
-        class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-600"
-      >
-        {{ entry.request.mimeType }}
+      <div>
+        <div
+          v-if="entry.type !== 'GQL'"
+          class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-600"
+        >
+          {{ entry.request.mimeType }}
+        </div>
+        <CopyButton :value="params || variables || data" />
       </div>
     </div>
     <div v-if="entry" class="relative flex-grow overflow-hidden">
@@ -31,6 +34,7 @@
 
 <script>
 import Params from '@/components/Params'
+import CopyButton from './base/CopyButton.vue'
 import ShevronUp from '@/assets/shevron-up.svg'
 import ShevronDown from '@/assets/shevron-down.svg'
 
@@ -39,6 +43,7 @@ const HEIGHT_COLLAPSED = 2.5 * 16 // 2.5rem
 export default {
   components: {
     Params,
+    CopyButton,
     ShevronUp,
     ShevronDown,
   },
