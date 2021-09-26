@@ -16,8 +16,7 @@
       v-else-if="!filteredEntries.length"
       class="flex flex-grow justify-center items-center p-4 h-full text-center text-gray-600"
     >
-      No results found
-      <span v-if="keyword">for "{{ keyword }}"</span>
+      <span>No results found {{ keyword ? `for "${keyword}"` : '' }}</span>
     </div>
     <Scroll v-else :scrollingX="false">
       <ul class="block flex-grow pt-1">
