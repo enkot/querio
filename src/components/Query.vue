@@ -1,6 +1,6 @@
 <template>
   <div class="query-block flex flex-col">
-    <div class="flex justify-between h-10 items-center px-3 overflow-hidden">
+    <div class="flex justify-between h-10 items-center px-3 overflow-hidden flex-shrink-0">
       <div class="flex items-center flex-grow overflow-hidden">
         <ButtonGroup
           v-model="activeView"
