@@ -68,7 +68,7 @@ function parseOperation(definition) {
 
 function internalParse(requestData) {
   const { definitions } = requestData
-  console.log('definitions', definitions)
+
   return definitions.map(definition => ({
     name: definition.name && definition.name.value,
     kind: definition.kind,

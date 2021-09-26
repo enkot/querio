@@ -119,7 +119,6 @@ export default {
   computed: {
     ...mapState(['settings', 'lastState', 'typeColors']),
     filteredEntries() {
-      console.log(this.entries)
       return this.entries
         .filter((entry) => entry)
         .filter(({ type, request }) => {

@@ -35,6 +35,7 @@ Vue.use(VueMq, {
 Vue.use(VTooltip, {
   themes: {
     tooltip: {
+      placement: 'bottom',
       delay: {
         show: 100,
         hide: 100,
