@@ -42,7 +42,7 @@
             :class="value === entry.id ? `text-white bg-${getColor(entry)}` : `bg-gray-200 dark:bg-gray-750 group-hover:bg-${getColor(entry)} text-gray-500 dark:text-gray-400 group-hover:text-white`"
           >{{ entry.type === 'GQL' ? entry.request.operationType[0] : entry.type[0] }}</div>
           <span class="font-semibold ml-2">
-            {{ entry.type === 'GQL' && !entry.request.name ? entry.request.operations.join(',') : entry.request.name }}
+            {{ entry.type === 'GQL' && !entry.request.name ? entry.request.operations.join(', ') : entry.request.name }}
           </span>
           <span class="font-normal opacity-50">{{ entry.request.queryString }}</span>
         </li>

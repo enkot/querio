@@ -30,7 +30,7 @@ export const schema = new GraphQLSchema({
         type: new GraphQLList(GraphQLString),
         resolve: async function* () {
           for (let letter = 65; letter <= 90; letter++) {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 100));
             yield String.fromCharCode(letter);
           }
         },

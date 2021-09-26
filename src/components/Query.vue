@@ -1,7 +1,7 @@
 <template>
   <div class="query-block flex flex-col">
-    <div class="flex justify-between flex-shrink-0 h-10 items-center px-3 overflow-hidden">
-      <div class="flex items-center">
+    <div class="flex justify-between h-10 items-center px-3 overflow-hidden">
+      <div class="flex items-center flex-grow overflow-hidden">
         <ButtonGroup
           v-model="activeView"
           :items="viewButtons"
@@ -15,14 +15,14 @@
           {{ entry.request.url }}
         </div>
       </div>
-      <CopyButton :value="query" />
+      <CopyButton :value="entry.type === 'GQL' ? parsedQuery : entry.request.url" class="flex-shrink-0"/>
     </div>
     <div v-if="entry" class="relative flex-grow overflow-hidden">
       <template v-if="activeView === 'query'">
         <codemirror
           v-if="entry.type === 'GQL'"
           ref="cmEditor"
-          :value="query"
+          :value="parsedQuery"
           :options="cmOptions"
           class="h-full ml-1"
         />
@@ -45,9 +45,9 @@
                   {{ entry.request.pathname }}
                 </div>
               </li>
-              <li v-if="query.length" class="flex flex-col font-semibold">
+              <li v-if="parsedQuery.length" class="flex flex-col font-semibold">
                 <div class="text-gray-600">Query Parameters</div>
-                <Params :items="query" class="mt-1" />
+                <Params :items="parsedQuery" class="mt-1" />
               </li>
             </ul>
           </div>
@@ -91,7 +91,7 @@ export default {
   },
   computed: {
     ...mapState(['typeColors']),
-    query() {
+    parsedQuery() {
       const { type, request } = this.entry
 
       if (type === 'GQL') {

@@ -1,16 +1,16 @@
 <template>
   <div class="response-block w-full flex flex-col group">
     <div class="flex justify-between flex-shrink-0 h-10 items-center px-3">
-      <div class="flex justify-between w-full">
-        <div class="flex flex-shrink-0 items-center">
-          <ButtonGroup
-            v-model="activeView"
-            :items="viewButtons"
-            :activeBgClass="
-              entry.response.isError ? 'bg-red-500' : 'bg-green-400'
-            "
-            class="flex-shrink-0"
-          />
+      <div class="flex items-center overflow-hidden">
+        <ButtonGroup
+          v-model="activeView"
+          :items="viewButtons"
+          :activeBgClass="
+            entry.response.isError ? 'bg-red-500' : 'bg-green-400'
+          "
+          class="flex-shrink-0"
+        />
+        <div class="flex overflow-auto flex-shrink-0">
           <div
             v-if="entry.response.status"
             class="text-xs text-gray-550 dark:text-gray-500 ml-3"
@@ -20,15 +20,16 @@
           <div class="text-xs text-gray-550 dark:text-gray-500 ml-3">
             {{ entry.time.toFixed(2) }} ms
           </div>
-          
+        </div>
+      </div>
+      <div class="flex items-center overflow-hidden">
+        <div
+          v-if="entry.type !== 'GQL'"
+          class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-600 mr-1"
+        >
+          {{ entry.response.mimeType }}
         </div>
         <CopyButton :value="data" />
-      </div>
-      <div
-        v-if="entry.type !== 'GQL'"
-        class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-600"
-      >
-        {{ entry.response.mimeType }}
       </div>
     </div>
     <div class="relative flex-grow overflow-hidden">
