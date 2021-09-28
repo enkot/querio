@@ -82,7 +82,7 @@ export default {
       this.searchOpened = false
       if (codemirror) {
         this.clearMarks()
-        codemirror.setCursor(this.cursor.to())
+        this.cursor && codemirror.setCursor(this.cursor.to())
         codemirror.focus()
       }
       this.lastKeyword = ''

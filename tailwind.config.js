@@ -1,12 +1,19 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  purge: [
-    './public/**/*.html',
-    './src/**/*.html',
-    './src/**/*.vue',
-    './src/**/*.js',
-  ],
+  purge: {
+    content: [
+      './public/**/*.html',
+      './src/**/*.html',
+      './src/**/*.vue',
+      './src/**/*.js',
+    ],
+    safelist: [
+      'bg-green-400',
+      'bg-green-500',
+      'bg-red-500'
+    ]
+  },
   darkMode: 'class',
   theme: {
     fontFamily: {
