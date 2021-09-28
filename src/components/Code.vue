@@ -80,9 +80,9 @@ export default {
       const { codemirror } = this.$refs.cmEditor
       
       this.searchOpened = false
-      if (codemirror) {
+      if (codemirror && this.searchCount) {
         this.clearMarks()
-        this.cursor && codemirror.setCursor(this.cursor.to())
+        codemirror.setCursor(this.cursor.to())
         codemirror.focus()
       }
       this.lastKeyword = ''
