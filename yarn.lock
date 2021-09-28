@@ -2866,6 +2866,11 @@ core-js-compat@^3.14.0, core-js-compat@^3.16.0, core-js-compat@^3.6.5:
     browserslist "^4.16.8"
     semver "7.0.0"
 
+core-js@^2.6.5:
+  version "2.6.12"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
+  integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
+
 core-js@^3.6.5:
   version "3.17.2"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.17.2.tgz#f960eae710dc62c29cca93d5332e3660e289db10"
@@ -3147,6 +3152,11 @@ csso@^4.0.2:
   integrity sha512-wvlcdIbf6pwKEk7vHj8/Bkc0B4ylXZruLvOgs9doS5eOsOpuodOV2zJChSpkp+pRpYQLQMeF04nr3Z68Sta9jA==
   dependencies:
     css-tree "^1.1.2"
+
+custom-event-polyfill@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/custom-event-polyfill/-/custom-event-polyfill-1.0.7.tgz#9bc993ddda937c1a30ccd335614c6c58c4f87aee"
+  integrity sha512-TDDkd5DkaZxZFM8p+1I3yAlvM3rSr1wbrOliG4yJiwinMZN8z/iGL7BTlDkrJcYTmgUSb4ywVCc3ZaUtOtC76w==
 
 cyclist@^1.0.1:
   version "1.0.1"
@@ -3514,6 +3524,11 @@ electron-to-chromium@^1.3.830:
   version "1.3.830"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.830.tgz#40e3144204f8ca11b2cebec83cf14c20d3499236"
   integrity sha512-gBN7wNAxV5vl1430dG+XRcQhD4pIeYeak6p6rjdCtlz5wWNwDad8jwvphe5oi1chL5MV6RNRikfffBBiFuj+rQ==
+
+element-matches@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/element-matches/-/element-matches-0.1.2.tgz#7345cb71e965bd2b12f725e524591c102198361a"
+  integrity sha512-yWh1otcs3OKUWDvu/IxyI36ZI3WNaRZlI0uG/DK6fu0pap0VYZ0J5pEGTk1zakme+hT0OKHwhlHc0N5TJhY6yQ==
 
 elliptic@^6.5.3:
   version "6.5.4"
@@ -8714,6 +8729,13 @@ uuid@^3.3.2, uuid@^3.4.0:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
+v-hotkey@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/v-hotkey/-/v-hotkey-0.9.0.tgz#3e6c17128a2faa5f2a80a2f06f6c062b83c5d3e1"
+  integrity sha512-PVbU9cw5oyoOr6y5q0nN9xmndzpCsLDhXRgVP80WRMvM1Eqkai3ViuJs/D+qFhRht6u5LyM10eBEZ5hq+3qLTg==
+  dependencies:
+    core-js "^2.6.5"
+
 v-tooltip@^3.0.0-alpha.21:
   version "3.0.0-alpha.21"
   resolved "https://registry.yarnpkg.com/v-tooltip/-/v-tooltip-3.0.0-alpha.21.tgz#249f5c57f2efef971497775c3e7d77e9e607593a"
@@ -8848,6 +8870,14 @@ vue-resize@^1.0.0:
   integrity sha512-z5M7lJs0QluJnaoMFTIeGx6dIkYxOwHThlZDeQnWZBizKblb99GSejPnK37ZbNE/rVwDcYcHY+Io+AxdpY952w==
   dependencies:
     "@babel/runtime" "^7.13.10"
+
+vue-shortkey@^3.1.7:
+  version "3.1.7"
+  resolved "https://registry.yarnpkg.com/vue-shortkey/-/vue-shortkey-3.1.7.tgz#31c09a99ed597331a6a49a45eeff894a78a19eef"
+  integrity sha512-Wm/vPXXS+4Wl/LoYpD+cZc0J0HIoVlY8Ep0JLIqqswmAya3XUBtsqKbhzEf9sXo+3rZ5p1YsUyZfXas8XD7YjQ==
+  dependencies:
+    custom-event-polyfill "^1.0.7"
+    element-matches "^0.1.2"
 
 vue-style-loader@^4.1.0, vue-style-loader@^4.1.2:
   version "4.1.3"

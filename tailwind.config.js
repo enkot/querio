@@ -52,6 +52,7 @@ module.exports = {
   },
   variants: {
     extend: {
+      backgroundColor: ['active'],
       borderRadius: ['responsive', 'first', 'last'],
       display: ['group-hover'],
     },

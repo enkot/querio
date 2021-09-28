@@ -2,10 +2,10 @@
   <div class="flex flex-col h-full">
     <div class="flex items-center flex-shrink-0 h-10 px-3">
       <input
-        type="search"
+        type="text"
         v-model="keyword"
         class="py-1 px-2 text-xs rounded-sm dark:text-white dark:bg-gray-900 border-gray-250 dark:border-gray-750 w-full placeholder-gray-600"
-        placeholder="Find..."
+        placeholder="Filter"
       />
     </div>
     <div

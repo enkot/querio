@@ -6,9 +6,12 @@ import 'codemirror/addon/fold/brace-fold.js'
 import 'codemirror/addon/fold/foldcode.js'
 import 'codemirror/addon/fold/foldgutter.js'
 import 'codemirror/addon/scroll/simplescrollbars.js'
+import 'codemirror/addon/search/searchcursor.js'
+import 'codemirror/addon/selection/active-line.js'
 
 import VueClipboard from 'vue-clipboard2'
 import VueCodemirror from 'vue-codemirror'
+import VueHotkey from 'v-hotkey'
 import Vuescroll from 'vuescroll'
 import VTooltip from 'v-tooltip'
 import VueMq from 'vue-mq'
@@ -26,6 +29,7 @@ import '@/components/base'
 import defaultConfig from 'tailwindcss/defaultConfig'
 
 Vue.use(VueClipboard)
+Vue.use(VueHotkey)
 Vue.use(VueMq, {
   breakpoints: {
     md: parseInt(defaultConfig.theme.screens.md),
@@ -68,6 +72,9 @@ Vue.use(VueCodemirror, {
     readOnly: true,
     scrollbarStyle: 'overlay',
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+    dialogOptions: {
+      closeOnEnter: false
+    },
     foldOptions: {
       widget() {
         const widget = document.createElement('div')

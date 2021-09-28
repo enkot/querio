@@ -53,6 +53,16 @@ export const schema = new GraphQLSchema({
                   )
                 ),
             },
+            thirdVerse: {
+              type: GraphQLString,
+              resolve: () =>
+                new Promise((resolve) =>
+                  setTimeout(
+                    () => resolve("Next time won't you sing with me?"),
+                    5000
+                  )
+                ),
+            },
           }),
         }),
         resolve: () => ({}),

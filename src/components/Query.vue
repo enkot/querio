@@ -1,28 +1,21 @@
 <template>
   <div class="query-block flex flex-col">
-    <div class="flex justify-between h-10 items-center px-3 overflow-hidden flex-shrink-0">
-      <div class="flex items-center flex-grow overflow-hidden">
-        <ButtonGroup
-          v-model="activeView"
-          :items="viewButtons"
-          :activeBgClass="`bg-${typeColors[entry.type]}`"
-          class="flex-shrink-0"
-        />
+    <TopBar v-model="activeView" :items="viewButtons" :color="typeColors[entry.type]" :copyValue="entry.type === 'GQL' ? parsedQuery : entry.request.url" @toggleSearch="$refs.code.toggleSearch()">
+      <template #left>
         <div
           v-if="entry"
           class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-550 dark:text-gray-500"
         >
           {{ entry.request.url }}
         </div>
-      </div>
-      <CopyButton :value="entry.type === 'GQL' ? parsedQuery : entry.request.url" class="flex-shrink-0"/>
-    </div>
+      </template>
+    </TopBar>
     <div v-if="entry" class="relative flex-grow overflow-hidden">
       <template v-if="activeView === 'query'">
-        <codemirror
+        <Code
           v-if="entry.type === 'GQL'"
-          ref="cmEditor"
-          :value="parsedQuery"
+          ref="code"
+          :data="parsedQuery"
           :options="cmOptions"
           class="h-full ml-1"
         />
@@ -71,18 +64,16 @@
 import { mapState } from 'vuex'
 import {print, parse} from 'graphql'
 import Headers from '@/components/Headers'
+import TopBar from '@/components/TopBar'
 import Params from '@/components/Params'
-import ButtonGroup from './base/ButtonGroup.vue'
-import ToggleButton from './base/ToggleButton.vue'
-import CopyButton from './base/CopyButton.vue'
+import Code from '@/components/Code'
 
 export default {
   components: {
     Headers,
+    TopBar,
     Params,
-    ButtonGroup,
-    ToggleButton,
-    CopyButton,
+    Code
   },
   props: {
     entry: {
@@ -127,7 +118,7 @@ export default {
   },
   methods: {
     refresh() {
-      this.$refs.cmEditor && this.$refs.cmEditor.codemirror.refresh()
+      this.$refs.code.refresh()
     }
   },
 }

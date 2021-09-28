@@ -10,8 +10,8 @@
         <span class="font-bold uppercase">
           {{ entry.type === 'GQL' ? 'Variables' : 'Body' }}
         </span>
-        <ShevronDown v-if="show" class="h-5" />
-        <ShevronUp v-else class="h-5" />
+        <ChevronDown v-if="show" class="h-5" />
+        <ChevronUp v-else class="h-5" />
       </div>
       <div>
         <div
@@ -34,18 +34,16 @@
 
 <script>
 import Params from '@/components/Params'
-import CopyButton from './base/CopyButton.vue'
-import ShevronUp from '@/assets/shevron-up.svg'
-import ShevronDown from '@/assets/shevron-down.svg'
+import ChevronUp from '@/assets/chevron-up.svg'
+import ChevronDown from '@/assets/chevron-down.svg'
 
 const HEIGHT_COLLAPSED = 2.5 * 16 // 2.5rem
 
 export default {
   components: {
     Params,
-    CopyButton,
-    ShevronUp,
-    ShevronDown,
+    ChevronUp,
+    ChevronDown,
   },
   props: {
     entry: {

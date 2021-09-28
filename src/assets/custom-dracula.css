@@ -35,10 +35,10 @@
   color: #718096;
 }
 .cm-s-dracula .CodeMirror-selected {
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.1);
 }
 .dark .cm-s-dracula .CodeMirror-selected {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
 }
 .cm-s-dracula .CodeMirror-line::selection,
 .cm-s-dracula .CodeMirror-line > span::selection,
@@ -144,7 +144,15 @@
 }
 
 .cm-s-dracula .CodeMirror-activeline-background {
-  background: rgba(255, 255, 255, 0.1);
+  background-color: transparent !important;
+}
+.search-opened .cm-s-dracula .CodeMirror-activeline-background,
+.cm-s-dracula.CodeMirror-focused .CodeMirror-activeline-background {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+.dark .search-opened .cm-s-dracula .CodeMirror-activeline-background,
+.dark .cm-s-dracula.CodeMirror-focused .CodeMirror-activeline-background {
+  background-color: rgba(255, 255, 255, 0.08) !important;
 }
 .cm-s-dracula .CodeMirror-matchingbracket {
   text-decoration: underline;

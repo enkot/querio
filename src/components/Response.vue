@@ -1,37 +1,22 @@
 <template>
   <div class="response-block w-full flex flex-col group">
-    <div class="flex justify-between flex-shrink-0 h-10 items-center px-3">
-      <div class="flex items-center overflow-hidden">
-        <ButtonGroup
-          v-model="activeView"
-          :items="viewButtons"
-          :activeBgClass="
-            entry.response.isError ? 'bg-red-500' : 'bg-green-400'
-          "
-          class="flex-shrink-0"
-        />
+    <TopBar v-model="activeView" :items="viewButtons" :color="entry.response.isError ? 'red-500' : 'green-400'" :copyValue="data" @toggleSearch="$refs.code.toggleSearch()">
+      <template #left>
         <div class="flex overflow-auto flex-shrink-0">
           <div
             v-if="entry.response.status"
             class="text-xs text-gray-550 dark:text-gray-500 ml-3"
-          >
-            {{ entry.response.status }} {{ entry.response.statusMessage }}
-          </div>
-          <div class="text-xs text-gray-550 dark:text-gray-500 ml-3">
-            {{ entry.time.toFixed(2) }} ms
-          </div>
+          >{{ entry.response.status }} {{ entry.response.statusMessage }}</div>
+          <div class="text-xs text-gray-550 dark:text-gray-500 ml-3">{{ entry.time.toFixed(2) }} ms</div>
         </div>
-      </div>
-      <div class="flex items-center overflow-hidden">
+      </template>
+      <template #right>
         <div
           v-if="entry.type !== 'GQL'"
-          class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-600 mr-1"
-        >
-          {{ entry.response.mimeType }}
-        </div>
-        <CopyButton :value="data" />
-      </div>
-    </div>
+          class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-600"
+        >{{ entry.response.mimeType }}</div>
+      </template>
+    </TopBar>
     <div class="relative flex-grow overflow-hidden">
       <template v-if="activeView === 'data'">
         <div
@@ -40,49 +25,43 @@
         >
           <div class="flex flex-col items-center">
             <ErrorImg class="h-40" />
-            <span class="inline-block mt-4 text-gray-800 dark:text-gray-500">
-              {{ entry.response.networkError }}
-            </span>
+            <span
+              class="inline-block mt-4 text-gray-800 dark:text-gray-500"
+            >{{ entry.response.networkError }}</span>
           </div>
         </div>
-        <div
-          v-else-if="parseError"
-          class="flex flex-grow justify-center items-center h-full"
-        >
+        <div v-else-if="parseError" class="flex flex-grow justify-center items-center h-full">
           <div class="flex flex-col items-center">
             <CodeImg class="h-40" />
-            <span class="inline-block mt-4 text-gray-800 dark:text-gray-500">
-              {{ entry.response.mimeType }}
-            </span>
-            <span class="inline-block text-gray-500 dark:text-gray-700">
-              {{ parseError }}
-            </span>
+            <span
+              class="inline-block mt-4 text-gray-800 dark:text-gray-500"
+            >{{ entry.response.mimeType }}</span>
+            <span class="inline-block text-gray-500 dark:text-gray-700">{{ parseError }}</span>
           </div>
         </div>
         <template v-else>
-          <codemirror v-model="data" class="h-full ml-1" />
+          <Code ref="code" :data="data" class="ml-1" />
         </template>
       </template>
-      <Headers
-        v-else-if="activeView === 'headers'"
-        :items="entry.response.headers"
-      />
+      <Headers v-else-if="activeView === 'headers'" :items="entry.response.headers" />
     </div>
   </div>
 </template>
 
 <script>
 import Headers from '@/components/Headers'
-import CopyButton from './base/CopyButton.vue'
+import Code from '@/components/Code'
+import TopBar from '@/components/TopBar'
 import ErrorImg from '@/assets/error.svg'
 import CodeImg from '@/assets/code.svg'
 
 export default {
   components: {
     Headers,
-    CopyButton,
+    Code,
+    TopBar,
     ErrorImg,
-    CodeImg
+    CodeImg,
   },
   props: {
     entry: {
@@ -93,7 +72,7 @@ export default {
     return {
       data: '',
       activeView: 'data',
-      parseError: null,
+      parseError: null
     }
   },
   computed: {
@@ -127,6 +106,6 @@ export default {
       },
       immediate: true,
     },
-  },
+  }
 }
 </script>

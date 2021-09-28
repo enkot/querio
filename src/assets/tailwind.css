@@ -52,6 +52,10 @@
 .CodeMirror-gutter-filler {
   background-color: transparent !important;
 }
+.search-highlight {
+  background-color: rgba(238, 238, 0, .6) !important;
+  color: rgba(17, 24, 39, 1) !important;
+}
 
 .splitpanes__splitter {
   position: relative;
