@@ -12,7 +12,7 @@
     </div>
     <div class="flex items-center overflow-hidden space-x-1">
       <slot name="right" />
-      <Button v-tooltip.bottom="'Find'" @click="$emit('toggleSearch')">
+      <Button v-if="showSearch" v-tooltip.bottom="'Find'" @click="$emit('toggleSearch')">
         <SearchIcon class="h-4 w-4" />
       </Button>
       <CopyButton :value="copyValue" class="flex-shrink-0"/>
@@ -52,6 +52,10 @@ export default {
     copyValue: {
       type: String,
       default: ''
+    },
+    showSearch: {
+      type: Boolean,
+      default: false
     }
   },
 }

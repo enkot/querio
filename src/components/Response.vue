@@ -1,6 +1,13 @@
 <template>
   <div class="response-block w-full flex flex-col group">
-    <TopBar v-model="activeView" :items="viewButtons" :color="entry.response.isError ? 'red-500' : 'green-400'" :copyValue="data" @toggleSearch="$refs.code.toggleSearch()">
+    <TopBar
+      v-model="activeView"
+      :items="viewButtons"
+      :color="entry.response.isError ? 'red-500' : 'green-400'"
+      :copyValue="activeView === 'data' ? data : JSON.stringify(entry.response.headers, null, 2)"
+      :showSearch="activeView === 'data'"
+      @toggleSearch="$refs.code.toggleSearch()"
+    >
       <template #left>
         <div class="flex overflow-auto flex-shrink-0">
           <div

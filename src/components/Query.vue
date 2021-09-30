@@ -1,13 +1,18 @@
 <template>
   <div class="query-block flex flex-col">
-    <TopBar v-model="activeView" :items="viewButtons" :color="typeColors[entry.type]" :copyValue="entry.type === 'GQL' ? parsedQuery : entry.request.url" @toggleSearch="$refs.code.toggleSearch()">
+    <TopBar
+      v-model="activeView"
+      :items="viewButtons"
+      :color="typeColors[entry.type]"
+      :copyValue="activeView === 'query' ? (entry.type === 'GQL' ? parsedQuery : entry.request.url) : JSON.stringify(entry.request.headers, null, 2)"
+      :showSearch="activeView === 'query' && entry.type === 'GQL'"
+      @toggleSearch="$refs.code.toggleSearch()"
+    >
       <template #left>
         <div
           v-if="entry"
           class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-550 dark:text-gray-500"
-        >
-          {{ entry.request.url }}
-        </div>
+        >{{ entry.request.url }}</div>
       </template>
     </TopBar>
     <div v-if="entry" class="relative flex-grow overflow-hidden">
@@ -26,17 +31,13 @@
                 <div class="text-gray-600">Origin</div>
                 <div
                   class="mt-1 px-2 py-1.5 rounded bg-gray-100 dark:bg-gray-850 text-gray-700 dark:text-gray-200"
-                >
-                  {{ entry.request.origin }}
-                </div>
+                >{{ entry.request.origin }}</div>
               </li>
               <li class="flex flex-col font-semibold">
                 <div class="text-gray-600">Path</div>
                 <div
                   class="mt-1 px-2 py-1.5 rounded bg-gray-100 dark:bg-gray-850 text-attribute dark:text-attribute-light"
-                >
-                  {{ entry.request.pathname }}
-                </div>
+                >{{ entry.request.pathname }}</div>
               </li>
               <li v-if="parsedQuery.length" class="flex flex-col font-semibold">
                 <div class="text-gray-600">Query Parameters</div>
@@ -49,20 +50,17 @@
           v-if="entry.type === 'GQL'"
           v-model="showPretified"
           class="absolute bottom-2 right-3 p-1 z-10"
-          v-tooltip.top="'Prettify'" 
+          v-tooltip.top="'Prettify'"
         />
       </template>
-      <Headers
-        v-else-if="activeView === 'headers'"
-        :items="entry.request.headers"
-      />
+      <Headers v-else-if="activeView === 'headers'" :items="entry.request.headers" />
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import {print, parse} from 'graphql'
+import { print, parse } from 'graphql'
 import Headers from '@/components/Headers'
 import TopBar from '@/components/TopBar'
 import Params from '@/components/Params'
