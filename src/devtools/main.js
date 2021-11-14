@@ -41,7 +41,7 @@ Vue.use(VTooltip, {
     tooltip: {
       placement: 'bottom',
       delay: {
-        show: 100,
+        show: 300,
         hide: 100,
       },
     }

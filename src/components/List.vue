@@ -23,7 +23,7 @@
         <li
           v-for="entry in filteredEntries"
           :key="entry.id"
-          v-tooltip="entry.request.url"
+          v-tooltip="{ content: entry.request.url, container: false }"
           class="relative group flex items-center px-3 py-2 cursor-pointer hover:text-gray-800 dark:hover:text-white truncate"
           :class="[
             value === entry.id
