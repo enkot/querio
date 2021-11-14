@@ -48,7 +48,7 @@
         </Scroll>
         <ToggleButton
           v-if="entry.type === 'GQL'"
-          v-model="showPretified"
+          v-model="showPrettified"
           class="absolute bottom-2 right-3 p-1 z-10"
           v-tooltip.top="'Prettify'"
         />
@@ -60,11 +60,12 @@
 
 <script>
 import { mapState } from 'vuex'
-import { print, parse } from 'graphql'
 import Headers from '@/components/Headers'
 import TopBar from '@/components/TopBar'
 import Params from '@/components/Params'
 import Code from '@/components/Code'
+import prettier from 'prettier/standalone'
+import gqlParser from 'prettier/parser-graphql'
 
 export default {
   components: {
@@ -84,7 +85,9 @@ export default {
       const { type, request } = this.entry
 
       if (type === 'GQL') {
-        return this.showPretified ? print(parse(request.query)) : request.query.replace(/\n$/, '')
+        return this.showPrettified
+          ? prettier.format(request.query, { semi: false, parser: "graphql", plugins: [gqlParser] })
+          : request.query.replace(/\n$/, '')
       }
 
       return Object.entries(request.query).map(([name, value]) => ({
@@ -108,7 +111,7 @@ export default {
   data() {
     return {
       activeView: 'query',
-      showPretified: true,
+      showPrettified: true,
       cmOptions: {
         mode: 'graphql',
       },
