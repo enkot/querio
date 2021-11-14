@@ -10,7 +10,7 @@
       />
       <slot name="left" />
     </div>
-    <div class="flex items-center overflow-hidden space-x-1">
+    <div class="flex items-center overflow-hidden space-x-1 flex-shrink-0">
       <slot name="right" />
       <Button v-if="showSearch" v-tooltip.bottom="'Find'" @click="$emit('toggleSearch')">
         <SearchIcon class="h-4 w-4" />

@@ -13,7 +13,7 @@
         <ChevronDown v-if="show" class="h-5" />
         <ChevronUp v-else class="h-5" />
       </div>
-      <div>
+      <div class="flex items-center overflow-hidden space-x-1">
         <div
           v-if="entry.type !== 'GQL'"
           class="whitespace-nowrap overflow-auto hide-scrollbar ml-2 text-gray-500 dark:text-gray-600"
