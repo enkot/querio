@@ -2,7 +2,7 @@ import { parse } from 'graphql'
 import parseUrl from 'url-parse'
 import httpStatus from 'statuses'
 
-const CANT_PARSE_RESPONSE_ERROR = Error(`Cant't parse response content`)
+const CANT_PARSE_RESPONSE_ERROR = Error(`Can't parse response content`)
 
 function ID() {
   return `${Date.now() + Math.random()}`
