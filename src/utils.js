@@ -249,7 +249,10 @@ export function parseGQLEntry(entry) {
 
 function getContent(entry) {
   return new Promise((resolve, reject) => {
-    if (!isContentType(entry.response, 'application/json'))
+    if (
+      !isContentType(entry.response, 'application/json') &&
+      !isContentType(entry.response, 'application/graphql-response+json')
+    )
       return reject(CANT_PARSE_RESPONSE_ERROR)
 
     entry.getContent(responseBody => {
