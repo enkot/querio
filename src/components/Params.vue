@@ -1,44 +1,30 @@
+<script lang="ts" setup>
+const { items = [] } = defineProps<{
+  items: {
+    name: string
+    value: string
+  }[]
+}>()
+</script>
+
 <template>
-  <div class="space-y-2 font-medium">
+  <div class="font-medium space-y-2">
     <div
       v-for="{ name, value } in items"
       :key="name"
-      class="flex items-center w-full"
+      class="w-full flex items-center"
     >
       <div
-        class="flex-1 px-2 py-1.5 rounded bg-gray-100 dark:bg-gray-850 text-property dark:text-property-light"
+        class="text-gray12 bg-gray2A flex-1 rounded px-2 py-1.5 text-property"
       >
         {{ name }}
       </div>
       <template v-if="value">
-        <ArrowRight class="h-3 w-3 mx-2 text-gray-400 dark:text-gray-600" />
-        <div
-          class="flex-1 px-2 py-1.5 rounded bg-gray-100 dark:bg-gray-850"
-          :class="
-            typeof value === 'string'
-              ? 'text-operator dark:text-operator-light'
-              : 'text-atom dark:text-atom-light'
-          "
-        >
+        <div class="i:arrow-right mx-2 h-3 w-3 text-gray6" />
+        <div class="text-pink12 bg-gray2A flex-1 rounded px-2 py-1.5">
           {{ value }}
         </div>
       </template>
     </div>
   </div>
 </template>
-
-<script>
-import ArrowRight from '@/assets/arrow-right.svg'
-
-export default {
-  components: {
-    ArrowRight,
-  },
-  props: {
-    items: {
-      type: Array,
-      default: () => [],
-    },
-  },
-}
-</script>

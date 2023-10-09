@@ -1,51 +1,18 @@
-<template>
-  <vue-scroll
-    v-if="settings.colorTheme === 'dark'"
-    key="dark"
-    :ops="options.dark"
-  >
-    <slot />
-  </vue-scroll>
-  <vue-scroll v-else key="light" :ops="options.light">
-    <slot />
-  </vue-scroll>
-</template>
-
-<script>
-import { mapState } from 'vuex'
-import tailwind from '../../../tailwind.config'
-
-const { gray } = tailwind.theme.extend.colors
-
-export default {
-  props: {
-    scrollingX: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  computed: {
-    ...mapState(['settings']),
-    options() {
-      return {
-        dark: {
-          bar: {
-            background: gray['800'],
-          },
-          scrollPanel: {
-            scrollingX: this.scrollingX,
-          },
-        },
-        light: {
-          bar: {
-            background: gray['250'],
-          },
-          scrollPanel: {
-            scrollingX: this.scrollingX,
-          },
-        },
-      }
-    },
-  },
-}
+<script setup lang="ts">
+import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'radix-vue'
 </script>
+
+<template>
+  <ScrollAreaRoot class="relative of-hidden" type="auto">
+    <ScrollAreaViewport class="h-full w-full">
+      <slot />
+    </ScrollAreaViewport>
+    <ScrollAreaScrollbar orientation="horizontal" class="h-2.5 flex touch-none select-none border-t border-t-transparent p-[1px] transition-colors">
+      <ScrollAreaThumb class="bg-gray4A relative flex-1 rounded-full" />
+    </ScrollAreaScrollbar>
+    <ScrollAreaScrollbar orientation="vertical" class="h-full w-2.5 flex touch-none select-none border-l border-l-transparent p-[1px] transition-colors">
+      <ScrollAreaThumb class="bg-gray4A relative flex-1 rounded-full" />
+    </ScrollAreaScrollbar>
+    <ScrollAreaCorner />
+  </ScrollAreaRoot>
+</template>

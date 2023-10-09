@@ -1,41 +1,19 @@
-<template>
-  <Button v-tooltip.bottom="{ content }" @click.stop="onCopy">
-    <CopyIcon class="h-4 w-4" />
-  </Button>
-</template>
+<script lang="ts" setup>
+import { clipboard } from '@extend-chrome/clipboard'
 
-<script>
-import Button from '@/components/base/Button.vue'
+const props = defineProps<{
+  value: string
+}>()
 
-import CopyIcon from '@/assets/copy.svg'
+const copied = false
 
-export default {
-  components: {
-    Button,
-    CopyIcon
-  },
-  props: {
-    value: {
-      required: true
-    }
-  },
-  data() {
-    return {
-      copied: false
-    }
-  },
-  computed: {
-    content() {
-      return this.copied ? 'Copied!' : 'Copy'
-    }
-  },
-  methods: {
-    onCopy() {
-      this.$copyText(this.value).then(() => {
-        this.copied = true
-        setTimeout(() => this.copied = false, 1500)
-      })
-    }
-  }
+async function copy() {
+  clipboard.writeText(props.value)
 }
 </script>
+
+<template>
+  <Button v-tooltip.bottom="copied ? 'Copied!' : 'Copy'" @click="copy()">
+    copy
+  </Button>
+</template>

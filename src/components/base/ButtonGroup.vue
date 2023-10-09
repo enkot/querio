@@ -1,44 +1,56 @@
-<template>
-  <div class="flex">
-    <button
-      v-for="item in items"
-      :key="item.name"
-      v-tooltip="item.label"
-      class="flex items-center justify-center flex-1 p-2 text-white font-bold leading-none focus:outline-none"
-      :class="[
-        size === 'large'
-          ? 'first:rounded-l last:rounded-r'
-          : 'first:rounded-l-sm last:rounded-r-sm text-tiny',
-        item.name === value
-          ? `${activeBgClass} text-white`
-          : 'bg-gray-150 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-750 dark:hover:text-gray-300',
-      ]"
-      @click="$emit('input', item.name)"
-    >
-      <slot :item="item">
-        <span>{{ item.title }}</span>
-      </slot>
-    </button>
-  </div>
-</template>
+<script lang="ts" setup>
+import { RadioGroupItem, RadioGroupRoot } from 'radix-vue'
+import type { ButtonGroupItem } from '~/types'
 
-<script>
-export default {
-  props: {
-    value: {
-      type: String,
-    },
-    items: {
-      type: Array,
-    },
-    activeBgClass: {
-      type: String,
-      default: 'bg-gray-500 dark:bg-gray-600',
-    },
-    size: {
-      type: String,
-      default: 'normal',
-    },
-  }
+const {
+  size = 'normal',
+} = defineProps<{
+  items: ButtonGroupItem[]
+  activeColor: string
+  size: string
+}>()
+
+defineSlots<{
+  default?: (props: { item: ButtonGroupItem }) => any
+}>()
+
+const activeView = defineModel<string>({ required: true })
+
+const initial = activeView.value
+
+function onClick(e: Event, item: any) {
+  if (item.name === activeView.value)
+    e.preventDefault()
 }
 </script>
+
+<template>
+  <RadioGroupRoot v-model="activeView" :default-value="initial" type="single" class="flex">
+    <Tooltip
+      v-for="item in items"
+      :key="item.name"
+    >
+      <template #trigger>
+        <RadioGroupItem
+          :value="item.name"
+          class="flex flex-1 items-center justify-center px-2.5 py-2 font-bold first:rounded-l-sm last:rounded-r-sm focus:outline-none"
+          :class="[
+            { 'text-tiny': size !== 'large' },
+            item.name === activeView
+              ? activeColor
+                ? `bg-${activeColor}4A text-${activeColor}11 dark:bg-${activeColor}3A`
+                : 'bg-gray4 text-gray12'
+              : 'bg-gray2A text-gray11 hover:bg-gray3A hover:text-gray12',
+          ]"
+          @click="onClick($event, item)"
+        >
+          <slot :item="item">
+            <span>{{ item.title }}</span>
+          </slot>
+        </RadioGroupItem>
+      </template>
+      <span v-if="item.label">{{ item.label }}</span>
+    </Tooltip>
+  </RadioGroupRoot>
+</template>
+

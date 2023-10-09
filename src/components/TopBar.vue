@@ -1,62 +1,51 @@
+<script lang="ts" setup>
+import type { ButtonGroupItem } from '~/types'
+
+const {
+  color = 'green-400',
+  items = [
+    {
+      title: 'DATA',
+      name: 'data',
+    },
+    {
+      title: 'HEADERS',
+      name: 'headers',
+    },
+  ],
+  copyValue = '',
+  showSearch = false,
+} = defineProps<{
+  color?: string
+  items?: ButtonGroupItem[]
+  copyValue?: string
+  showSearch?: boolean
+}>()
+
+defineEmits<{
+  (e: 'toggleSearch'): void
+}>()
+
+const modelValue = defineModel({ default: 'data' })
+</script>
+
 <template>
-  <div class="flex justify-between h-10 items-center px-3 overflow-hidden flex-shrink-0">
-    <div class="flex items-center flex-grow overflow-hidden">
+  <div class="h-12 flex flex-shrink-0 items-center justify-between of-hidden bg-gray1 px-3">
+    <div class="flex flex-grow items-center of-hidden">
       <ButtonGroup
-        :value="value"
+        v-model="modelValue"
         :items="items"
-        :activeBgClass="`bg-${color}`"
+        :active-color="color"
         class="flex-shrink-0"
-        @input="$emit('input', $event)"
       />
       <slot name="left" />
     </div>
-    <div class="flex items-center overflow-hidden space-x-1 flex-shrink-0">
+    <div class="flex flex-shrink-0 items-center of-hidden space-x-1">
       <slot name="right" />
       <Button v-if="showSearch" v-tooltip.bottom="'Find'" @click="$emit('toggleSearch')">
         <SearchIcon class="h-4 w-4" />
       </Button>
-      <CopyButton :value="copyValue" class="flex-shrink-0"/>
+      <CopyButton :value="copyValue" class="flex-shrink-0" />
     </div>
   </div>
 </template>
-
-<script>
-import SearchIcon from '@/assets/search.svg'
-
-export default {
-  components: {
-    SearchIcon
-  },
-  props: {
-    value: {
-      type: String,
-      default: 'data'
-    },
-    color: {
-      type: String,
-      default: 'green-400'
-    },
-    items: {
-      type: Array,
-      default: () => [
-        {
-          title: 'DATA',
-          name: 'data',
-        },
-        {
-          title: 'HEADERS',
-          name: 'headers',
-        },
-      ]
-    },
-    copyValue: {
-      type: String,
-      default: ''
-    },
-    showSearch: {
-      type: Boolean,
-      default: false
-    }
-  },
-}
-</script>

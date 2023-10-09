@@ -1,6 +1,0 @@
-{
-  "extName": {
-    "message": "Querio - GraphQL and XHR requests inspector",
-    "description": "Missing DevTools network inspector for GraphQL, Fetch and XHR requests"
-  }
-}
