@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 import type { Entry } from '~/types'
+import { formatData } from '~/utils'
 
 const props = defineProps<{
   entry: Entry
 }>()
 
 const activeView = ref('data')
+const showPreflight = ref(false)
 const data = ref<string | null>(null)
-const error = ref<string | null>(null)
+const parseError = ref<string | null>(null)
 const codeRef = ref<any>(null)
+const isError = ref(false)
 
 const viewButtons = computed(() => [
   {
@@ -22,8 +25,8 @@ const viewButtons = computed(() => [
 ])
 
 watch(() => props.entry, async (entry) => {
-  data.value = null
-  error.value = null
+  parseError.value = null
+  isError.value = false
 
   if (!entry)
     return
@@ -31,13 +34,17 @@ watch(() => props.entry, async (entry) => {
   try {
     const response = await entry.response.getResponse()
 
-    if (!response)
+    if (!response) {
+      data.value = null
       return
+    }
 
-    data.value = JSON.stringify(isGQLEntry(entry) ? response.errors || response.data : response, null, 2)
+    data.value = formatData(response, entry.response.mimeType)
+    isError.value = entry.response.isError || (isGQLEntry(props.entry) && response.errors?.length)
   }
   catch (e: any) {
-    error.value = e.message
+    data.value = null
+    parseError.value = e.message
   }
 }, { immediate: true })
 
@@ -49,11 +56,13 @@ defineExpose({
 </script>
 
 <template>
-  <div class="response-block group h-full flex flex-col of-hidden bg-gray1">
+  <div class="response-block h-full flex flex-col of-hidden bg-gray1">
     <TopBar
       v-model="activeView"
+      v-model:preflight="showPreflight"
+      :has-preflight="entry.request.preflightHeaders"
       :items="viewButtons"
-      :color="entry.response.isError ? 'red' : 'green'"
+      :color="isError ? 'red' : 'green'"
       :copy-value="activeView === 'data' ? data : JSON.stringify(entry.response.headers, null, 2)"
       :show-search="activeView === 'data'"
       @toggle-search="codeRef.toggleSearch()"
@@ -62,51 +71,57 @@ defineExpose({
         <div class="flex flex-shrink-0 of-auto">
           <div
             v-if="entry.response.status"
-            class="text-gray10 ml-3 text-xs"
+            class="ml-3 text-xs text-gray10"
           >
             {{ entry.response.status }} {{ entry.response.statusMessage }}
           </div>
-          <div class="text-gray10 ml-3 text-xs">
+          <div class="ml-3 text-xs text-gray10">
             {{ entry.time.toFixed(2) }} ms
           </div>
         </div>
       </template>
       <template #right>
         <div
-          v-if="entry.type !== 'GQL'"
-          class="hide-scrollbar text-gray10 ml-2 of-auto whitespace-nowrap"
+          v-if="entry.type !== 'GQL' && activeView !== 'headers'"
+          class="hide-scrollbar ml-2 whitespace-nowrap text-gray10"
         >
           {{ entry.response.mimeType }}
         </div>
       </template>
     </TopBar>
-    <div class="relative flex-grow of-hidden">
+    <div class="relative flex flex-1 flex-col of-hidden">
       <template v-if="activeView === 'data'">
-        <div
-          v-if="entry.response.error"
-          class="h-full flex flex-grow items-center justify-center"
-        >
-          <div class="flex flex-col items-center">
-            <ErrorImg class="h-40" />
-            <span
-              class="mt-4 inline-block text-gray-800 dark:text-gray-500"
-            >{{ entry.response.error }}</span>
-          </div>
-        </div>
-        <div v-else-if="error" class="h-full flex flex-grow items-center justify-center">
+        <div v-if="parseError" class="h-full flex flex-grow items-center justify-center">
           <div class="flex flex-col items-center">
             <CodeImg class="h-40" />
             <span
-              class="mt-4 inline-block text-gray-800 dark:text-gray-500"
+              class="mt-4 inline-block text-gray10"
             >{{ entry.response.mimeType }}</span>
-            <span class="inline-block text-gray-500 dark:text-gray-700">{{ error }}</span>
+            <span class="inline-block text-gray8">{{ parseError }}</span>
+          </div>
+        </div>
+        <div
+          v-else-if="!data"
+          class="h-full flex flex-grow items-center justify-center"
+        >
+          <div class="flex flex-col items-center">
+            <h1 v-if="entry.response.status" class="text-6xl font-bold text-gray6">
+              {{ entry.response.status }}
+            </h1>
+            <span
+              class="mt-4 inline-block text-gray10"
+            >{{ entry.response.status === 0 ? 'Failed to load response data' : entry.response.statusMessage }}</span>
           </div>
         </div>
         <template v-else>
-          <Code ref="codeRef" :code="data || ''" class="h-full pl-1" />
+          <Code ref="codeRef" :code="data" :mode="entry.response.mimeType" class="of-auto" />
         </template>
       </template>
-      <Headers v-else-if="activeView === 'headers'" :items="entry.response.headers" class="h-full w-full of-hidden" />
+      <Table
+        v-else-if="activeView === 'headers'"
+        :items="entry.response.preflightHeaders && showPreflight ? entry.response.preflightHeaders : entry.response.headers"
+        class="px-3 py-1"
+      />
     </div>
   </div>
 </template>

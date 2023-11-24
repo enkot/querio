@@ -1,8 +1,13 @@
-import type { DefinitionNode, FieldNode, InlineFragmentNode, OperationDefinitionNode, SelectionNode } from 'graphql'
+import type { DefinitionNode, FieldNode, InlineFragmentNode, OperationDefinitionNode, OperationTypeNode, SelectionNode } from 'graphql'
 import type { Header, Param } from 'har-format'
 import { Kind, parse } from 'graphql'
 import { getQuery, parseURL } from 'ufo'
+import { randomUUID } from 'uncrypto'
 import httpStatus from 'http-status'
+import prettier from 'prettier/standalone'
+import htmlParser from 'prettier/parser-html'
+// @ts-expect-error - no types
+import xmlParser from '@prettier/plugin-xml'
 import type { BaseEntry, Entry, GQLEntry, HAREntry, HTTPEntry } from '~/types'
 
 class ParseResponseError extends Error {
@@ -12,8 +17,22 @@ class ParseResponseError extends Error {
   }
 }
 
-function ID() {
-  return `${Date.now() + Math.random()}`
+interface ParsedQueryDefinition {
+  name: string | undefined
+  kind: Kind.OPERATION_DEFINITION
+  type: OperationTypeNode
+  operations: string[]
+}
+
+interface ParsedQuery {
+  query: string
+  data: ParsedQueryDefinition[]
+  variables?: any
+  operationName?: string
+  batch?: {
+    length: number
+    count: number
+  }
 }
 
 function isInlineFragment(node: SelectionNode): node is InlineFragmentNode {
@@ -36,6 +55,17 @@ function isOperationDefinition(node: DefinitionNode): node is OperationDefinitio
   return node.kind === Kind.OPERATION_DEFINITION
 }
 
+function isValidQuery(query: string) {
+  try {
+    parse(query, { noLocation: true })
+
+    return true
+  }
+  catch (_) {
+    return false
+  }
+}
+
 function getName(node: SelectionNode): string {
   if (isInlineFragment(node) && node.typeCondition)
     return `InlineFragment if ${node.typeCondition.name.value}`
@@ -54,14 +84,14 @@ function parseOperation(definition: SelectionNode) {
   }
 }
 
-function getQueryFromParams(params: Param[] = []) {
-  const { value } = params.find(param => param.name === 'query') || {}
+function getQueryValue(name: string, params: Param[] = []) {
+  const { value } = params.find(param => param.name === name) || {}
 
   return value && decodeURIComponent(value)
 }
 
-function parseQuery(query: string) {
-  const { definitions } = parse(query, { noLocation: false })
+function parseQuery(query: string): ParsedQueryDefinition[] {
+  const { definitions } = parse(query, { noLocation: true })
 
   return definitions.filter(isOperationDefinition).map(definition => ({
     name: definition.name?.value,
@@ -84,28 +114,27 @@ export function isHTTP(entry: HAREntry) {
 export function isGraphQL(entry: HAREntry) {
   const { text, params } = entry.request.postData || {}
 
-  if (isContentType(entry.request, 'application/graphql'))
-    return true
+  let query: string | undefined
 
-  if (isContentType(entry.request, 'application/json') && text) {
-    try {
-      const json = JSON.parse(text)
-
-      return !!(json.query || json.at(0).query)
+  if (isContentType(entry.request, 'application/json')) {
+    if (entry.request.method === 'GET') {
+      query = getQueryValue('query', entry.request.queryString)
     }
-    catch (e) {
-      return false
+    else if (entry.request.method === 'POST' && text) {
+      try {
+        const json = JSON.parse(text)
+        query = Array.isArray(json) ? json.at(0).query : json.query
+      }
+      catch (e) {
+        return false
+      }
     }
   }
+  else if (isContentType(entry.request, 'application/x-www-form-urlencoded') && params) {
+    query = getQueryValue('query', params)
+  }
 
-  if (
-    isContentType(entry.request, 'application/x-www-form-urlencoded')
-      && params
-      && getQueryFromParams(params)
-  )
-    return true
-
-  return false
+  return !!query && isValidQuery(query)
 }
 
 export function parseHTTPEntry(entry: HAREntry): HTTPEntry {
@@ -120,7 +149,7 @@ export function parseHTTPEntry(entry: HAREntry): HTTPEntry {
     if (postData.params)
       params = postData.params
 
-    else
+    else if (postData.text)
       body = JSON.parse(postData.text)
   }
   const getResponse = () => getContent(entry)
@@ -145,32 +174,53 @@ export function parseHTTPEntry(entry: HAREntry): HTTPEntry {
   }
 }
 
-export function parseGQLEntry(entry: HAREntry): GQLEntry[] {
-  const parsedQueries = []
-  const { postData } = entry.request
-  const { text, params } = postData || {}
+function isArray(arr: any): arr is any[] {
+  return Array.isArray(arr)
+}
 
-  if (isContentType(entry.request, 'application/graphql') && text) {
-    parsedQueries.push({
-      data: parseQuery(text),
-    })
-  }
-  else if (
-    isContentType(entry.request, 'application/x-www-form-urlencoded')
-    && params
+export function parseGQLEntry(entry: HAREntry): GQLEntry | GQLEntry[] {
+  const parsedQueries: ParsedQuery[] = []
+  const { postData, queryString } = entry.request
+
+  let json: ParsedQuery | null = null
+
+  if (
+    (isContentType(entry.request, 'application/json') && entry.request.method === 'GET')
+    || isContentType(entry.request, 'application/x-www-form-urlencoded')
   ) {
-    const query = getQueryFromParams(params)
+    const params = entry.request.method === 'GET' ? queryString : postData?.params
+    const query = getQueryValue('query', params)
+    const variables = getQueryValue('variables', params)
+    const operationName = getQueryValue('operationName', params)
+
     if (query) {
-      parsedQueries.push({
+      json = {
+        query,
         data: parseQuery(query),
-      })
+        variables,
+        operationName,
+      }
     }
   }
-  else if (text) {
-    let json
+  else if (postData?.text) {
+    try {
+      json = JSON.parse(postData.text)
+    }
+    catch (e: any) {
+      console.warn(
+        `Internal Error Parsing: ${entry}. Message: ${e.message}. Stack: ${e.stack}`,
+      )
+      return []
+    }
+  }
+
+  [json].flat().forEach((batchItem: any, i: number) => {
+    const { query, operationName } = batchItem
+    let { variables } = batchItem
 
     try {
-      json = JSON.parse(text)
+      variables
+        = typeof variables === 'string' ? JSON.parse(variables) : variables
     }
     catch (e: any) {
       console.warn(
@@ -179,35 +229,23 @@ export function parseGQLEntry(entry: HAREntry): GQLEntry[] {
       return []
     }
 
-    if (!Array.isArray(json))
-      json = [json]
+    parsedQueries.push({
+      query,
+      data: parseQuery(query),
+      variables,
+      operationName,
+      batch: isArray(json)
+        ? {
+            length: json.length,
+            count: i + 1,
+          }
+        : undefined,
+    })
+  })
 
-    for (const batchItem of json) {
-      const { query } = batchItem
-      let { variables } = batchItem
-
-      try {
-        variables
-          = typeof variables === 'string' ? JSON.parse(variables) : variables
-      }
-      catch (e: any) {
-        console.warn(
-          `Internal Error Parsing: ${entry}. Message: ${e.message}. Stack: ${e.stack}`,
-        )
-        return []
-      }
-
-      parsedQueries.push({
-        query,
-        data: parseQuery(query),
-        variables,
-      })
-    }
-  }
-
-  return parsedQueries.map((parsedQuery, i) => {
-    const { data, query, variables } = parsedQuery
-    const { name, type, operations } = data[i]
+  const fullParsedQueries = parsedQueries.map((parsedQuery, i) => {
+    const { data, query, variables, operationName, batch } = parsedQuery
+    const { name, type, operations } = data[0]
     const { request, response, ...base } = getEntryInfo(entry)
 
     const getResponse = async () => {
@@ -221,11 +259,12 @@ export function parseGQLEntry(entry: HAREntry): GQLEntry[] {
       type: 'GQL',
       request: {
         ...request,
-        name,
+        name: operationName || name,
         operations,
         operationType: type,
         query,
         variables,
+        batch,
       },
       response: {
         ...response,
@@ -233,6 +272,8 @@ export function parseGQLEntry(entry: HAREntry): GQLEntry[] {
       },
     }
   })
+
+  return isArray(json) ? fullParsedQueries : fullParsedQueries[0]
 }
 
 async function getContent(entry: HAREntry) {
@@ -253,28 +294,39 @@ async function getContent(entry: HAREntry) {
 }
 
 function getEntryInfo(entry: HAREntry): BaseEntry {
-  const { url, postData, headers: requestHeaders } = entry.request
-  const { content, headers: responseHeaders, status, _error: error } = entry.response
-  const isError = !!(error || status >= 400)
+  const { url, postData, headers: requestHeaders, method } = entry.request
+  const { content, headers: responseHeaders, status } = entry.response
+  const isError = status >= 400 || status === 0
   const statusMessage = httpStatus[+status]
   const timestamp = new Date(entry.startedDateTime).getTime()
 
   return {
-    id: ID(),
+    id: randomUUID(),
     time: entry.time,
     timestamp,
     request: {
       url,
       headers: requestHeaders,
       mimeType: postData?.mimeType,
+      method,
     },
     response: {
       status,
       statusMessage,
       isError,
-      error,
       headers: responseHeaders,
       mimeType: content.mimeType,
     },
   }
+}
+
+export function formatData(data: string, mimeType: string) {
+  if (['text/html', 'application/html'].includes(mimeType))
+    return prettier.format(data, { semi: false, parser: 'html', plugins: [htmlParser] })
+  else if (['application/xml', 'text/xml'].includes(mimeType))
+    return prettier.format(data, { semi: false, parser: 'xml', plugins: [xmlParser] })
+  else if (['application/json', 'text/json'].includes(mimeType))
+    return JSON.stringify(data, null, 2)
+  else
+    return data
 }

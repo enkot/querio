@@ -9,18 +9,15 @@ const props = defineProps<{
 }>()
 
 const activeView = ref('query')
-const showPrettified = ref(true)
-const options = ref({ mode: 'graphql' })
+const showPreflight = ref(false)
+const mode = ref('graphql')
 const codeRef = ref<any>(null)
 
 const parsedQuery = computed(() => {
   const { type, request } = props.entry
 
-  if (type === 'GQL') {
-    return showPrettified.value
-      ? prettier.format(request.query, { semi: false, parser: 'graphql', plugins: [gqlParser] })
-      : request.query.replace(/\n$/, '')
-  }
+  if (type === 'GQL')
+    return prettier.format(request.query, { semi: false, parser: 'graphql', plugins: [gqlParser] })
 
   return Object.entries(request.query).map(([name, value]) => ({
     name,
@@ -41,7 +38,7 @@ const viewButtons = computed(() => [
 
 defineExpose({
   refresh() {
-    codeRef.value?.refresh()
+    // codeRef.value?.refresh()
   },
 })
 </script>
@@ -50,6 +47,8 @@ defineExpose({
   <div class="query-block h-full flex flex-col of-hidden bg-gray1">
     <TopBar
       v-model="activeView"
+      v-model:preflight="showPreflight"
+      :has-preflight="entry.request.preflightHeaders"
       :items="viewButtons"
       :color="TYPE_COLORS[entry.type]"
       :copy-value="activeView === 'query' ? (entry.type === 'GQL' ? parsedQuery : entry.request.url) : JSON.stringify(entry.request.headers, null, 2)"
@@ -59,61 +58,64 @@ defineExpose({
       <template #left>
         <div
           v-if="entry"
-          class="hide-scrollbar text-gray10 ml-2 of-auto whitespace-nowrap"
+          class="hide-scrollbar ml-2 of-auto whitespace-nowrap text-gray10"
         >
           {{ entry.request.url }}
         </div>
       </template>
+      <template #right>
+        <div v-if="isGQLEntry(entry) && entry.request.batch" class="rounded-sm px-1.5 py-1 text-tiny font-bold uppercase text-amber8">
+          <span class="text-amber8">{{ entry.request.batch.count }}/{{ entry.request.batch.length }}</span> in Batch
+        </div>
+      </template>
     </TopBar>
-    <div v-if="entry" class="flex-grow of-hidden">
+    <div v-if="entry" class="relative flex flex-1 flex-col of-hidden">
       <template v-if="activeView === 'query'">
         <Code
           v-if="isGQLEntry(entry)"
           ref="codeRef"
-          :value="parsedQuery"
-          :options="options"
-          class="flex-grow pl-1"
+          :code="parsedQuery"
+          :mode="mode"
+          class="of-auto"
         />
-        <div v-else class="h-full">
+        <div v-else class="flex flex-1 flex-col of-auto">
           <div class="p-3">
-            <ul class="space-y-3">
+            <ul class="space-y-2">
               <li class="flex flex-col font-semibold">
-                <div class="text-gray8">
+                <div class="text-gray9">
                   Origin
                 </div>
                 <div
-                  class="text-gray12 bg-gray2A mt-1 rounded px-2 py-1.5"
+                  class="mt-1 rounded-sm bg-gray2A px-2 py-1.5 text-gray12"
                 >
                   {{ entry.request.host }}
                 </div>
               </li>
               <li class="flex flex-col font-semibold">
-                <div class="text-gray8">
+                <div class="text-gray9">
                   Path
                 </div>
                 <div
-                  class="text-green12 bg-gray2A mt-1 rounded px-2 py-1.5"
+                  class="mt-1 rounded-sm bg-gray2A px-2 py-1.5 text-green10"
                 >
                   {{ entry.request.pathname }}
                 </div>
               </li>
-              <li v-if="parsedQuery.length" class="flex flex-col font-semibold">
-                <div class="text-gray8">
+              <li v-if="parsedQuery.length" class="flex flex-col">
+                <div class="font-semibold text-gray9">
                   Query Parameters
                 </div>
-                <Params :items="parsedQuery" class="mt-1" />
+                <Table :items="parsedQuery" class="mt-1" />
               </li>
             </ul>
           </div>
         </div>
-        <ToggleButton
-          v-if="isGQLEntry(entry)"
-          v-model="showPrettified"
-          v-tooltip.top="'Prettify'"
-          class="absolute bottom-2 right-3 z-10 p-1"
-        />
       </template>
-      <Headers v-else-if="activeView === 'headers'" :items="entry.request.headers" class="h-full w-full of-hidden" />
+      <Table
+        v-else-if="activeView === 'headers'"
+        :items="entry.request.preflightHeaders && showPreflight ? entry.request.preflightHeaders : entry.request.headers"
+        class="px-3 py-1"
+      />
     </div>
   </div>
 </template>

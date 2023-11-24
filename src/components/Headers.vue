@@ -9,22 +9,26 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <Scroll class="pb-2">
-    <table class="min-w-full">
-      <tbody class="divide-y divide-gray3">
+  <div class="of-auto px-3 py-1">
+    <table class="w-full flex-1 border-collapse">
+      <tbody class="w-full">
         <tr v-for="(item, i) in items" :key="i">
           <td
-            class="whitespace-nowrap px-5 py-1.5 font-semibold leading-5 text-gray9"
+            class="whitespace-nowrap"
           >
-            {{ item.name }}
+            <div class="rounded-sm bg-gray2A px-2 py-1.5 text-gray12">
+              {{ item.name }}
+            </div>
           </td>
           <td
-            class="text-gray12 whitespace-nowrap px-5 py-1.5 leading-5"
+            class="whitespace-nowrap"
           >
-            {{ item.value }}
+            <div class="rounded-sm bg-gray2A px-2 py-1.5 text-blue12 dark:text-purple12">
+              {{ item.value }}
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
-  </Scroll>
+  </div>
 </template>

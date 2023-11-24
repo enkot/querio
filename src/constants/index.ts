@@ -11,7 +11,7 @@ export const TYPE_COLORS: Record<string, string> = {
   POST: 'purple',
   PUT: 'purple',
   PATCH: 'purple',
-  DELETE: 'rose',
+  DELETE: 'tomato',
   OPTIONS: 'gray',
   HEAD: 'gray',
 }

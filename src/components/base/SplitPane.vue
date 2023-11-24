@@ -44,7 +44,7 @@ function onResized(event: any) {
 
 <template>
   <Splitpanes :horizontal="horizontal" h-full of-hidden @resize="onResize" @resized="onResized">
-    <Pane h-full class="min-h-[2.5rem]" :size="size" :min-size="$slots.right ? (minSize || 0) : 100">
+    <Pane h-full w-full class="min-h-[2.5rem]" :size="size" :min-size="$slots.right ? (minSize || 0) : 100">
       <slot name="left" />
     </Pane>
     <Pane v-if="$slots.right" :size="100 - size" relative h-full class="min-h-[2.5rem]" :min-size="minSize || 0">
@@ -61,6 +61,7 @@ function onResized(event: any) {
   position: relative;
 }
 .splitpanes__splitter:before {
+  @apply transition ease-in-out;
   position: absolute;
   left: 0;
   top: 0;
@@ -68,8 +69,8 @@ function onResized(event: any) {
   z-index: 1;
 }
 .splitpanes__splitter:hover:before {
-  background: #8881;
-  opacity: 1;
+  @apply bg-indigo-500;
+  opacity: 0.8;
 }
 .splitpanes--vertical>.splitpanes__splitter {
   min-width: 0 !important;
@@ -82,13 +83,13 @@ function onResized(event: any) {
   @apply border-t border-gray4;
 }
 .splitpanes--vertical>.splitpanes__splitter:before {
-  left: -4px;
-  right: -4px;
+  left: -2px;
+  right: -2px;
   height: 100%;
 }
 .splitpanes--horizontal>.splitpanes__splitter:before {
-  top: -4px;
-  bottom: -4px;
+  top: -2px;
+  bottom: -2px;
   width: 100%;
 }
 </style>

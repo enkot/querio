@@ -1,16 +1,32 @@
 <script lang="ts" setup>
 import { SwitchRoot, SwitchThumb } from 'radix-vue'
 
+withDefaults(defineProps<{
+  size: string
+  equal: boolean
+}>(), {
+  size: 'normal',
+  equal: false,
+})
+
 const checked = defineModel<boolean>({ required: true })
 </script>
 
 <template>
   <SwitchRoot
     v-model:checked="checked"
-    class="data-[state=checked]:bg-gray11 relative h-[20px] w-[36px] flex cursor-default border-2 border-transparent rounded-full bg-gray5 focus-within:outline-black focus-within:outline"
+    class="relative flex cursor-pointer border border-gray4A rounded-full bg-gray1"
+    :class="[
+      size === 'tiny' ? 'h-[18px] w-[30px]' : 'h-[20px] w-[36px]',
+      equal ? '' : 'data-[state=checked]:bg-gray11',
+    ]"
   >
     <SwitchThumb
-      class="my-auto block h-4 w-4 rounded-full bg-gray1 shadow-sm transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-4"
+      class="my-auto ml-1px block rounded-full bg-gray8 shadow-sm transition-transform duration-100 will-change-transform"
+      :class="[
+        size === 'tiny' ? 'h-3.5 w-3.5 data-[state=checked]:translate-x-3' : 'h-4 w-4 data-[state=checked]:translate-x-4',
+        equal ? '' : 'data-[state=checked]:bg-gray-4',
+      ]"
     />
   </SwitchRoot>
 </template>

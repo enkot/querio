@@ -12,7 +12,6 @@ async function gqlQueryBook() {
       query BookQuery($id: ID!) {
         book(id: $id) {
           id
-          title
           author
         }
       }
@@ -39,10 +38,27 @@ async function gqlQueryAuthor() {
   })
 }
 
+async function gqlQueryReview() {
+  const result = await client.client.query({
+    query: gql`
+      query ReviewQuery($id: ID!) {
+        review(id: $id) {
+          id
+          message
+        }
+      }
+    `,
+    variables: {
+      id: '1',
+    },
+  })
+}
+
 async function gqlQueryBatch() {
   return Promise.all([
     gqlQueryBook(),
     gqlQueryAuthor(),
+    gqlQueryReview(),
   ])
 }
 
@@ -84,10 +100,41 @@ async function get() {
     },
   })
 }
+
+async function html() {
+  const result = await apiFetch('/html', {
+    method: 'GET',
+  })
+}
+
+async function xml() {
+  const result = await apiFetch('/xml', {
+    method: 'GET',
+  })
+}
+
+async function error() {
+  const result = await apiFetch('/error', {
+    method: 'GET',
+  })
+}
+
+async function multipart() {
+  const body = new FormData()
+
+  // body.append('image', image)
+  body.append('title', 'Marvel')
+  body.append('content', 'Endgame')
+
+  const result = await apiFetch('/user', {
+    method: 'POST',
+    body,
+  })
+}
 </script>
 
 <template>
-  <div class="bg-gray-900 min-h-screen flex flex-col items-center justify-center space-y-10">
+  <div class="min-h-screen flex flex-col items-center justify-center bg-gray-900 space-y-10">
     <div class="text-7xl text-white">
       <h1>Querio Playground</h1>
     </div>
@@ -98,6 +145,9 @@ async function get() {
       <button class="btn" type="button" @click="post">
         POST
       </button>
+      <button class="btn" type="button" @click="multipart">
+        Multipart
+      </button>
       <button class="btn" type="button" @click="gqlQueryBook">
         GQL Query
       </button>
@@ -106,6 +156,15 @@ async function get() {
       </button>
       <button class="btn" type="button" @click="gqlQueryBatch">
         GQL Batch Query
+      </button>
+      <button class="btn" type="button" @click="html">
+        HTML
+      </button>
+      <button class="btn" type="button" @click="xml">
+        XML
+      </button>
+      <button class="btn" type="button" @click="error">
+        Error
       </button>
     </div>
   </div>

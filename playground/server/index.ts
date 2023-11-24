@@ -1,5 +1,5 @@
 import { createServer } from 'node:http'
-import { createApp, eventHandler, handleCors, setCookie, toNodeListener } from 'h3'
+import { createApp, eventHandler, handleCors, sendError, setCookie, toNodeListener } from 'h3'
 import { ApolloServer } from '@apollo/server'
 import { startServerAndCreateH3Handler } from '@as-integrations/h3'
 
@@ -14,12 +14,19 @@ const typeDefs = `#graphql
     title: String
     author: String
   }
+
+  type Review {
+    id: ID!
+    message: String
+  }
   
   type Query {
     author(id: ID!): Author
     authors: [Author]
     book(id: ID!): Book
     books: [Book]
+    review(id: ID!): Review
+    reviews: [Review]
   }
 
   type Mutation {
@@ -31,7 +38,7 @@ const typeDefs = `#graphql
 const authors = [
   {
     id: '1',
-    name: 'Kate Chopin',
+    name: 'Stephen King',
   },
   {
     id: '2',
@@ -52,12 +59,25 @@ const books = [
   },
 ]
 
+const reviews = [
+  {
+    id: '1',
+    message: 'I love this book!',
+  },
+  {
+    id: '2',
+    message: 'I hate this book!',
+  },
+]
+
 const resolvers = {
   Query: {
     author: (_, args) => authors.find(author => author.id === args.id),
     authors: () => authors,
-    book: (_, args) => books.find(book => book.id === args.id),
+    book: (_, args) => new Error('Test error'),
     books: () => books,
+    review: (_, args) => reviews.find(review => review.id === args.id),
+    reviews: () => reviews,
   },
   Mutation: {
     addBook: (_, args) => {
@@ -108,5 +128,27 @@ app.use(
     }
   }),
 )
+app.use('/html', eventHandler(() => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Hello World!</h1>
+</body>
+</html>  
+`))
+app.use('/xml', eventHandler(() => `
+<book>
+  <id>1</id>
+  <title>string</title>
+  <author>string</author>
+</book>
+`))
+app.use('/string', eventHandler(() => 'Hello world!'))
+app.use('/error', eventHandler(event => sendError(event, new Error('Test error'))))
 
 createServer(toNodeListener(app)).listen(process.env.PORT || 3000)

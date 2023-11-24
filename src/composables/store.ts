@@ -1,6 +1,6 @@
 import type { Entry } from '~/types'
 
-export const entries = reactive<Entry[]>([])
+export const entries = reactive<(Entry | Entry[])[]>([])
 
 export const colorMode = useColorMode({
   emitAuto: true,

@@ -1,5 +1,5 @@
 import type { OperationTypeNode } from 'graphql'
-import type { Header, Param, Entry as _HAREntry, Response as _HARResponse } from 'har-format'
+import type { Header, Param, Entry as _HAREntry } from 'har-format'
 import type { QueryObject } from 'ufo'
 
 export interface ButtonGroupItem {
@@ -8,28 +8,25 @@ export interface ButtonGroupItem {
   label?: string
 }
 
-export interface HARResponse extends _HARResponse {
-  _error?: Error
-}
-
 export interface HAREntry extends _HAREntry {
   _resourceType: 'xhr' | 'fetch' | 'preflight'
   getContent: () => Promise<[string, string]>
-  response: HARResponse
 }
 
 interface BaseEntryRequest {
   url: string
   headers: Header[]
+  preflightHeaders?: Header[]
   mimeType?: string
+  method: string
 }
 
 interface BaseEntryResponse {
   status: number
   statusMessage?: string
   isError: boolean
-  error?: Error
   headers: Header[]
+  preflightHeaders?: Header[]
   mimeType: string
 }
 
@@ -67,6 +64,10 @@ interface GQLEntryRequest extends BaseEntryRequest {
   operationType: OperationTypeNode
   query: any
   variables: any
+  batch?: {
+    length: number
+    count: number
+  }
 }
 
 interface GQLEntryResponse extends BaseEntryResponse {
