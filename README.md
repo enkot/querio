@@ -45,18 +45,6 @@ Please read [`CONTRIBUTING`](CONTRIBUTING.md) for details on our [`CODE OF CONDU
 
 See the [`CHANGELOG`](CHANGELOG.md) file for details.
 
-## **Authors**
-
-This project owes its existence to the collective efforts of all those who contribute — [contribute now](CONTRIBUTING.md).
-
-<div align="center">
-  <a href="https://github.com/hoppscotch/hoppscotch/graphs/contributors">
-    <img src="https://opencollective.com/hoppscotch/contributors.svg?width=840&button=false"
-      alt="Contributors"
-      width="100%" />
-  </a>
-</div>
-
 ## **License**
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) — see the [`LICENSE`](LICENSE) file for details.
