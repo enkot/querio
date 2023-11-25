@@ -17,8 +17,8 @@ const opts = {
 const httpLink = ApolloLink.split(
   operation => operation.getContext().hasUpload,
   createUploadLink(opts),
-  // new HttpLink(opts),
-  new BatchHttpLink(opts),
+  new HttpLink(opts),
+  // new BatchHttpLink(opts),
 )
 
 // Cache implementation

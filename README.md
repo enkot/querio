@@ -1,16 +1,62 @@
-# Vue 3 + TypeScript + Vite
+<div align="center">
+  <a href="https://querio.dev">
+    <img
+      src="https://github.com/enkot/querio/blob/main/public/logo.png?raw=true"
+      alt="Querio"
+      height="64"
+    />
+  </a>
+  <h3>
+    <b>
+      Querio
+    </b>
+  </h3>
+  <b>
+    Missing DevTools network inspector for GraphQL and HTTP requests
+  </b>
+  <p>
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen?logo=github)](CODE_OF_CONDUCT.md)
+</div>
 
-## Recommended IDE Setup
+![Querio](https://github.com/enkot/querio/blob/main/public/promo.png?raw=true)
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
 
-## Type Support For `.vue` Imports in TS
+### **Features**
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+❤️ **Lightweight:** Crafted with minimalistic UI design.
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+📡 **Request:** Intercepts GraphQL and raw HTTP requests  in real time.
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+📃 **Formatting:** Automatically formats requests and response.
+
+🗄️ **GraphQL:** Batch requests.
+
+🌈 **Theme:** System preference, Light or Dark.
+
+
+## **Contributing**
+
+Please contribute using [GitHub Flow](https://guides.github.com/introduction/flow). Create a branch, add commits, and [open a pull request](https://github.com/enkot/querio/compare).
+
+Please read [`CONTRIBUTING`](CONTRIBUTING.md) for details on our [`CODE OF CONDUCT`](CODE_OF_CONDUCT.md), and the process for submitting pull requests to us.
+
+## **Changelog**
+
+See the [`CHANGELOG`](CHANGELOG.md) file for details.
+
+## **Authors**
+
+This project owes its existence to the collective efforts of all those who contribute — [contribute now](CONTRIBUTING.md).
+
+<div align="center">
+  <a href="https://github.com/hoppscotch/hoppscotch/graphs/contributors">
+    <img src="https://opencollective.com/hoppscotch/contributors.svg?width=840&button=false"
+      alt="Contributors"
+      width="100%" />
+  </a>
+</div>
+
+## **License**
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) — see the [`LICENSE`](LICENSE) file for details.
