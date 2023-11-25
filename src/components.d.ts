@@ -26,7 +26,6 @@ declare module '@vue/runtime-core' {
     SplitPane: typeof import('./components/base/SplitPane.vue')['default']
     Switch: typeof import('./components/base/Switch.vue')['default']
     Table: typeof import('./components/base/Table.vue')['default']
-    TempCode: typeof import('./components/TempCode.vue')['default']
     Toggle: typeof import('./components/base/Toggle.vue')['default']
     Tooltip: typeof import('./components/base/Tooltip.vue')['default']
     TopBar: typeof import('./components/TopBar.vue')['default']

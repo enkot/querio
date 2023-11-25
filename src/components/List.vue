@@ -62,7 +62,7 @@ function clear() {
 </script>
 
 <template>
-  <DefineListItem v-slot="{ $slots, entry, color }">
+  <DefineListItem v-slot="{ entry, color }">
     <Tooltip :content="entry.request.url">
       <li
         class="group relative block w-full cursor-pointer truncate px-3 py-2"
@@ -83,8 +83,6 @@ function clear() {
           {{ isGQLEntry(entry) && !entry.request.name ? entry.request.operationType : entry.request.name }}
         </span>
         <span v-if="!isGQLEntry(entry)" class="font-semibold opacity-50">{{ entry.request.queryString }}</span>
-
-        <component :is="$slots.default" />
       </li>
     </Tooltip>
   </DefineListItem>
