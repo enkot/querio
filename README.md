@@ -28,7 +28,7 @@
 
 📡 **Request:** Intercepts GraphQL and raw HTTP requests  in real time.
 
-📃 **Formatting:** Automatically formats requests and response.
+📃 **Formatting:** Automatically formats request and response.
 
 🗄️ **GraphQL:** Batch requests.
 
