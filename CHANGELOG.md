@@ -1,9 +1,9 @@
 # Changelog
 
 
-## v2.0.0
+## v1.0.0
 
-[compare changes](https://github.com/enkot/querio/compare/v0.7.0...v2.0.0)
+[compare changes](https://github.com/enkot/querio/compare/v0.7.0...v1.0.0)
 
 ### 🚀 Enhancements
 
