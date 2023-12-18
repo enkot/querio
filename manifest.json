@@ -5,17 +5,9 @@
   "devtools_page": "devtools.html",
   "permissions": [
     "storage",
-    "background",
     "clipboardRead",
     "clipboardWrite"
   ],
-  "host_permissions": [
-    "http://*/*", 
-    "https://*/*"
-  ],
-  "background": {
-    "service_worker": "src/service-worker.ts"
-  },
   "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",
