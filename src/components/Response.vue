@@ -60,10 +60,10 @@ defineExpose({
     <TopBar
       v-model="activeView"
       v-model:preflight="showPreflight"
-      :has-preflight="entry.request.preflightHeaders"
+      :has-preflight="!!entry.request.preflightHeaders"
       :items="viewButtons"
       :color="isError ? 'red' : 'green'"
-      :copy-value="activeView === 'data' ? data : JSON.stringify(entry.response.headers, null, 2)"
+      :copy-value="activeView === 'data' ? data as string : JSON.stringify(entry.response.headers, null, 2)"
       :show-search="activeView === 'data'"
       @toggle-search="codeRef.toggleSearch()"
     >
@@ -93,7 +93,7 @@ defineExpose({
       <template v-if="activeView === 'data'">
         <div v-if="parseError" class="h-full flex flex-grow items-center justify-center">
           <div class="flex flex-col items-center">
-            <CodeImg class="h-40" />
+            <div class="i:code h-40" />
             <span
               class="mt-4 inline-block text-gray10"
             >{{ entry.response.mimeType }}</span>
@@ -113,9 +113,7 @@ defineExpose({
             >{{ entry.response.status === 0 ? 'Failed to load response data' : entry.response.statusMessage }}</span>
           </div>
         </div>
-        <template v-else>
-          <Code ref="codeRef" :code="data" :mode="entry.response.mimeType" class="of-auto" />
-        </template>
+        <Code v-else ref="codeRef" :code="data" :mode="entry.response.mimeType" class="of-auto" />
       </template>
       <Table
         v-else-if="activeView === 'headers'"

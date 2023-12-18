@@ -1,7 +1,7 @@
 <script setup lang="ts">
-interface Row {
+export interface Row {
   name: string
-  value: string
+  value?: string
 }
 
 withDefaults(defineProps<{
@@ -33,7 +33,7 @@ withDefaults(defineProps<{
               <div class="flex-grow px-2 py-1.5">
                 {{ item.name }}
               </div>
-              <CopyButton :value="item.value" class="sticky top-0 h-full flex-shrink-0 -right-2 op-0! group-hover:op-100!" />
+              <CopyButton v-if="item.value" :value="item.value" class="sticky top-0 h-full flex-shrink-0 -right-2 op-0! group-hover:op-100!" />
             </div>
           </td>
         </tr>

@@ -1,13 +1,8 @@
 import type { ViewUpdate } from '@codemirror/view'
 import {
   EditorView,
-  placeholder,
 } from '@codemirror/view'
 import type { Extension } from '@codemirror/state'
-import {
-  Compartment,
-  EditorState,
-} from '@codemirror/state'
 import type { Language } from '@codemirror/language'
 import {
   LanguageSupport,
@@ -20,13 +15,14 @@ import { xmlLanguage } from '@codemirror/lang-xml'
 import { htmlLanguage } from '@codemirror/lang-html'
 import { jsonLanguage } from '@codemirror/lang-json'
 import { html } from '@codemirror/legacy-modes/mode/xml'
-import { shell } from '@codemirror/legacy-modes/mode/shell'
 import { yaml } from '@codemirror/legacy-modes/mode/yaml'
-import { GQLLanguage } from '../../codemirror-lang-graphql/dist'
+import { graphql } from 'cm6-graphql'
 import {
   baseTheme,
   basicSetup,
 } from '~/codemirror/theme'
+
+const graphqlLanguage = graphql()
 
 interface CodeMirrorOptions {
   mode: MaybeRefOrGetter<string>
@@ -56,20 +52,18 @@ const getLanguage = (langMime: string): Language | null => {
   else if (langMime === 'application/javascript')
     return javascriptLanguage
 
-  else if (langMime === 'graphql')
-    return GQLLanguage
-
   else if (langMime === 'application/xml')
     return xmlLanguage
 
   else if (langMime === 'text/html')
     return htmlLanguage
 
+  else if (langMime === 'graphql')
+    // @ts-expect-error incorrect type
+    return graphqlLanguage
+
   else if (langMime === 'htmlmixed')
     return StreamLanguage.define(html)
-
-  else if (langMime === 'application/x-sh')
-    return StreamLanguage.define(shell)
 
   else if (langMime === 'text/x-yaml')
     return StreamLanguage.define(yaml)
@@ -87,44 +81,22 @@ export function useCodemirror(
   value: Ref<string | undefined>,
   options: Partial<CodeMirrorOptions>,
 ) {
-  const language = new Compartment()
-  const lineWrapping = new Compartment()
-  const placeholderConfig = new Compartment()
-
   const cachedValue = ref(value.value)
-
   const view = ref<EditorView>()
 
   const initView = (el: any) => {
     const extensions = [
       basicSetup,
       baseTheme,
-      EditorView.updateListener.of((update) => {
-        if (options.readOnly)
-          update.view.contentDOM.inputMode = 'none'
-      }),
-      EditorState.changeFilter.of(() => !options.readOnly),
-      placeholderConfig.of(
-        placeholder(options.placeholder ?? ''),
-      ),
-      language.of(
-        getEditorLanguage(
-          toValue(options.mode) ?? '',
-        ),
-      ),
-      lineWrapping.of(
-        options.lineWrapping
-          ? [EditorView.lineWrapping]
-          : [],
+      getEditorLanguage(
+        toValue(options.mode) ?? '',
       ),
     ]
 
     view.value = new EditorView({
       parent: el,
-      state: EditorState.create({
-        doc: value.value,
-        extensions,
-      }),
+      doc: value.value,
+      extensions,
     })
   }
 
@@ -135,7 +107,7 @@ export function useCodemirror(
     }
   })
 
-  watch(el, () => {
+  watch([el, options.mode], () => {
     if (el.value) {
       if (view.value)
         view.value.destroy()
@@ -173,37 +145,4 @@ export function useCodemirror(
     }
     cachedValue.value = newVal
   })
-
-  watch(
-    () => toValue(options.mode),
-    () => {
-      view.value?.dispatch({
-        effects: language.reconfigure(
-          getEditorLanguage(
-            (toValue(options.mode) as any) ?? '',
-          ),
-        ),
-      })
-    },
-  )
-
-  watch(
-    () => options.lineWrapping,
-    (newMode) => {
-      view.value?.dispatch({
-        effects: lineWrapping.reconfigure(
-          newMode ? [EditorView.lineWrapping] : [],
-        ),
-      })
-    },
-  )
-
-  watch(
-    () => options.placeholder,
-    (newValue) => {
-      view.value?.dispatch({
-        effects: placeholderConfig.reconfigure(placeholder(newValue ?? '')),
-      })
-    },
-  )
 }

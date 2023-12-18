@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { Row } from './base/Table.vue'
 import type { Entry } from '~/types'
 import { formatData } from '~/utils'
 
@@ -62,7 +63,7 @@ defineExpose({
     </div>
     <div v-if="entry" class="relative flex flex-1 flex-col of-hidden border-t border-gray3">
       <Table v-if="params" :items="params" class="px-3 py-3" />
-      <Code v-else ref="codeRef" :code="variables || body" class="of-auto" />
+      <Code v-else-if="variables || body" ref="codeRef" :code="(variables || body) as string" class="of-auto" />
     </div>
   </div>
 </template>

@@ -6,8 +6,8 @@ const {
   size = 'normal',
 } = defineProps<{
   items: ButtonGroupItem[]
-  activeColor: string
-  size: string
+  activeColor?: string
+  size?: string
 }>()
 
 defineSlots<{

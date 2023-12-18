@@ -19,7 +19,7 @@ import {
 } from '@codemirror/language'
 import { tags as t } from '@lezer/highlight'
 import type { Extension } from '@codemirror/state'
-import { EditorState } from '@codemirror/state'
+// import { EditorState } from '@codemirror/state'
 import { defaultKeymap } from '@codemirror/commands'
 import {
   highlightSelectionMatches,
@@ -407,7 +407,7 @@ export const basicSetup: Extension = [
   }),
   drawSelection(),
   dropCursor(),
-  EditorState.allowMultipleSelections.of(true),
+  // EditorState.allowMultipleSelections.of(true),
   syntaxHighlighting(baseHighlightStyle),
   syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
   bracketMatching(),

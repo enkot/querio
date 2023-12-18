@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import prettier from 'prettier/standalone'
 import gqlParser from 'prettier/parser-graphql'
+import type { Row } from './base/Table.vue'
 import type { Entry } from '~/types'
 import { TYPE_COLORS } from '~/constants'
 
@@ -22,7 +23,7 @@ const parsedQuery = computed(() => {
   return Object.entries(request.query).map(([name, value]) => ({
     name,
     value,
-  }))
+  })) as Row[]
 })
 
 const viewButtons = computed(() => [
@@ -48,10 +49,10 @@ defineExpose({
     <TopBar
       v-model="activeView"
       v-model:preflight="showPreflight"
-      :has-preflight="entry.request.preflightHeaders"
+      :has-preflight="!!entry.request.preflightHeaders"
       :items="viewButtons"
       :color="TYPE_COLORS[entry.type]"
-      :copy-value="activeView === 'query' ? (entry.type === 'GQL' ? parsedQuery : entry.request.url) : JSON.stringify(entry.request.headers, null, 2)"
+      :copy-value="activeView === 'query' ? (entry.type === 'GQL' ? parsedQuery as string : entry.request.url) : JSON.stringify(entry.request.headers, null, 2)"
       :show-search="activeView === 'query' && entry.type === 'GQL'"
       @toggle-search="codeRef?.toggleSearch()"
     >
@@ -74,7 +75,7 @@ defineExpose({
         <Code
           v-if="isGQLEntry(entry)"
           ref="codeRef"
-          :code="parsedQuery"
+          :code="parsedQuery as string"
           :mode="mode"
           class="of-auto"
         />
@@ -101,7 +102,7 @@ defineExpose({
                   {{ entry.request.pathname }}
                 </div>
               </li>
-              <li v-if="parsedQuery.length" class="flex flex-col">
+              <li v-if="parsedQuery.length && (typeof parsedQuery !== 'string')" class="flex flex-col">
                 <div class="font-semibold text-gray9">
                   Query Parameters
                 </div>
