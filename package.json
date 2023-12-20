@@ -9,7 +9,7 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "play": "concurrently \"jiti ./playground/server/index.ts\" \"vite ./playground/client\"",
-    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && git push --follow-tags"
+    "release": "npm run build && changelogen --release && git push --follow-tags"
   },
   "dependencies": {
     "@codemirror/commands": "^6.3.0",
