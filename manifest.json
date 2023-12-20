@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Querio",
+  "name": "Querio - GraphQL and HTTP requests inspector",
   "version": "1.0.0",
   "devtools_page": "devtools.html",
   "permissions": [

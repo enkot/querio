@@ -93,7 +93,7 @@ defineExpose({
       <template v-if="activeView === 'data'">
         <div v-if="parseError" class="h-full flex flex-grow items-center justify-center">
           <div class="flex flex-col items-center">
-            <div class="i:code h-40" />
+            <div class="i:code text-6xl text-gray6" />
             <span
               class="mt-4 inline-block text-gray10"
             >{{ entry.response.mimeType }}</span>

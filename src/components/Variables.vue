@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { Row } from './base/Table.vue'
 import type { Entry } from '~/types'
 import { formatData } from '~/utils'
 

@@ -39,7 +39,7 @@ const filtered = useArrayFilter(() => entries, (entry) => {
   const _entry = Array.isArray(entry) ? entry[0] : entry
   return (activeView.value === 'ALL' || ACTIVE_METHODS[activeView.value].includes(_entry.type))
     && _entry.request.method !== 'OPTIONS'
-    && [entry].flat().some(({ request }) => request.name?.toLowerCase()?.includes(keyword.value.toLowerCase()))
+    && [entry].flat().some(({ request }) => !request.name || request.name.toLowerCase()?.includes(keyword.value.toLowerCase()))
     && _entry.timestamp > lastCleared.value
 })
 const sorted = useSorted(filtered, (a, b) => {
