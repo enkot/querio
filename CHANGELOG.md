@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v1.1.0
+
+[compare changes](https://github.com/enkot/querio/compare/v2.0.0...v1.1.0)
+
+### 🚀 Enhancements
+
+- Changelog ([28a8a34](https://github.com/enkot/querio/commit/28a8a34))
+- License file ([2ee8792](https://github.com/enkot/querio/commit/2ee8792))
+- Changelogen ([cd3db54](https://github.com/enkot/querio/commit/cd3db54))
+
+### 🩹 Fixes
+
+- Update README ([1845cc2](https://github.com/enkot/querio/commit/1845cc2))
+- Keep codemirror-lang-graphql dist ([0679cad](https://github.com/enkot/querio/commit/0679cad))
+- Added store assets; fix version ([dc86422](https://github.com/enkot/querio/commit/dc86422))
+- Use cm6-graphql ([bbb71a8](https://github.com/enkot/querio/commit/bbb71a8))
+- Remove redundant permissions ([ea0712b](https://github.com/enkot/querio/commit/ea0712b))
+- Missing logo ([6e4e4a9](https://github.com/enkot/querio/commit/6e4e4a9))
+- Queries without name ([8c32f15](https://github.com/enkot/querio/commit/8c32f15))
+- Release script ([c299c88](https://github.com/enkot/querio/commit/c299c88))
+
+### ❤️ Contributors
+
+- Enkot ([@enkot](http://github.com/enkot))
+
 ## v1.0.0
 
 [compare changes](https://github.com/enkot/querio/compare/v0.7.0...v1.0.0)
