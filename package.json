@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "play": "concurrently \"jiti ./playground/server/index.ts\" \"vite ./playground/client\""
+    "play": "concurrently \"jiti ./playground/server/index.ts\" \"vite ./playground/client\"",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && git push --follow-tags"
   },
   "dependencies": {
     "@codemirror/commands": "^6.3.0",
@@ -41,9 +42,9 @@
     "webext-bridge": "^5.0.5"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^0.27.0",
     "@apollo/client": "^3.7.14",
     "@apollo/server": "^4.7.1",
-    "@antfu/eslint-config": "^0.27.0",
     "@as-integrations/h3": "^1.1.5",
     "@crxjs/vite-plugin": "2.0.0-beta.19",
     "@iconify/utils": "^2.1.5",
@@ -56,9 +57,10 @@
     "@unocss/eslint-config": "^0.51.12",
     "@unocss/transformer-directives": "^0.51.12",
     "@unocss/transformer-variant-group": "^0.51.12",
-    "@vue/apollo-composable": "4.0.0-beta.4",
     "@vitejs/plugin-vue": "^3.2.0",
+    "@vue/apollo-composable": "4.0.0-beta.4",
     "apollo-upload-client": "^17.0.0",
+    "changelogen": "^0.5.5",
     "concurrently": "^7.6.0",
     "eslint": "^8.40.0",
     "h3": "^1.6.5",
