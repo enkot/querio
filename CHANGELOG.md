@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v1.1.1
+
+[compare changes](https://github.com/enkot/querio/compare/v1.1.0...v1.1.1)
+
+### 🩹 Fixes
+
+- Version in manifest ([7db8225](https://github.com/enkot/querio/commit/7db8225))
+
+### 💅 Refactors
+
+- Improved preflights; improved sizes ([56535dd](https://github.com/enkot/querio/commit/56535dd))
+
+### ❤️ Contributors
+
+- Enkot ([@enkot](http://github.com/enkot))
+
 ## v1.1.0
 
 [compare changes](https://github.com/enkot/querio/compare/v2.0.0...v1.1.0)
