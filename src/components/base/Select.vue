@@ -21,7 +21,7 @@ const value = defineModel<any>()
 <template>
   <SelectRoot v-model="value">
     <SelectTrigger
-      class="min-w-[120px] inline-flex items-center justify-between gap-2 border border-gray4A rounded bg-gray1 px-3 py-2 text-xs text-gray12 placeholder-gray10"
+      class="min-w-[120px] inline-flex items-center justify-between gap-2 border border-gray4A rounded bg-gray1 px-3 py-1.5 text-xs text-gray12 placeholder-gray10"
       aria-label="Customise options"
     >
       <SelectValue placeholder="Select..." />

@@ -6,7 +6,7 @@ import { presetScrollbar } from 'unocss-preset-scrollbar'
 import type { RadixColors } from 'unocss-preset-radix'
 import { genCSS, generateAliases, generateColors, newPalette } from './radix'
 
-const targetColors: RadixColors[] = ['blue', 'cyan', 'green', 'pink', 'purple', 'indigo', 'red', 'gray', 'crimson', 'amber', 'orange', 'plum', 'ruby', 'tomato']
+const targetColors: RadixColors[] = ['blue', 'cyan', 'green', 'pink', 'purple', 'indigo', 'red', 'gray', 'amber', 'tomato', 'brown']
 
 const prefix = '--un-preset-radix-'
 const palette = newPalette(...targetColors)
@@ -29,24 +29,10 @@ export default defineConfig({
         i: FileSystemIconLoader('./src/assets/icons'),
       },
     }),
-    // presetRadix({
-    //   palette,
-    //   extend: true,
-    // }),
-    // presetForms(),
     presetScrollbar(),
   ],
   theme: {
     colors: {
-      // cmblue: colors.blue,
-      // cmcyan: colors.cyan,
-      // cmgreen: colors.green,
-      // cmpink: colors.pink,
-      // cmpurple: colors.purple,
-      // cmindigo: colors.indigo,
-      // cmred: colors.red,
-      // cmgray: colors.gray,
-      // cmfuchsia: colors.fuchsia,
       ...radixColors,
       ...radixAliases,
     },

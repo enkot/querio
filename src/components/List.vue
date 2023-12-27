@@ -8,6 +8,7 @@ const { entries = [] } = defineProps<{
 
 const [DefineListItem, ReuseListItem] = createReusableTemplate<{ entry: Entry; color: string }>()
 const active = defineModel<number | string>({ local: true })
+const showPreflights = ref(false)
 
 const ACTIVE_METHODS = {
   GQL: ['GQL'],
@@ -37,8 +38,12 @@ const viewButtons = ref([
 
 const filtered = useArrayFilter(() => entries, (entry) => {
   const _entry = Array.isArray(entry) ? entry[0] : entry
-  return (activeView.value === 'ALL' || ACTIVE_METHODS[activeView.value].includes(_entry.type))
-    && _entry.request.method !== 'OPTIONS'
+  return (
+    activeView.value === 'ALL'
+    || ACTIVE_METHODS[activeView.value].includes(_entry.type)
+    || (activeView.value === 'GQL' && _entry.request.method === 'OPTIONS' && entries.some(e => [e].flat().some(n => n.type === 'GQL' && _entry.request.url === n.request.url)))
+  )
+    && !(_entry.request.method === 'OPTIONS' && !showPreflights.value)
     && [entry].flat().some(({ request }) => !request.name || request.name.toLowerCase()?.includes(keyword.value.toLowerCase()))
     && _entry.timestamp > lastCleared.value
 })
@@ -77,7 +82,10 @@ function clear() {
           class="h-5 w-5 inline-flex flex-shrink-0 items-center justify-center rounded font-bold leading-none uppercase"
           :class="active === entry.id ? `bg-${color}9 text-white` : `bg-gray3A group-hover:bg-${color}3A group-hover:text-${color}11 text-gray11 border-gray3A`"
         >
-          {{ isGQLEntry(entry) ? entry.request.operationType.at(0) : entry.type.at(0) }}
+          <div v-if="entry.request.method === 'OPTIONS'" class="i:preflight-enabled shrink-0" />
+          <template v-else>
+            {{ isGQLEntry(entry) ? entry.request.operationType.at(0) : entry.type.at(0) }}
+          </template>
         </div>
         <span class="ml-2 font-semibold">
           {{ isGQLEntry(entry) && !entry.request.name ? entry.request.operationType : entry.request.name }}
@@ -87,8 +95,8 @@ function clear() {
     </Tooltip>
   </DefineListItem>
 
-  <div class="h-full flex flex-col">
-    <div class="h-12 flex flex-shrink-0 items-center border-b border-gray3 px-3">
+  <div class="h-full flex flex-col bg-gray2">
+    <div class="h-10 flex flex-shrink-0 items-center border-b border-gray3 px-2">
       <Input v-model="keyword" placeholder="Filter" class="w-full" />
     </div>
     <div class="flex-1 flex-grow of-auto border-b border-gray4">
@@ -112,21 +120,26 @@ function clear() {
           <ReuseListItem v-else :entry="entry" :color="getColor(entry)" />
         </template>
       </ul>
-      <div v-else class="h-full flex items-center justify-center text-gray9">
-        No requests found
+      <div v-else class="h-full flex items-center justify-center px-4 text-gray9">
+        <span class="text-center">{{ keyword ? `No requests found for "${keyword}"` : 'No requests found' }}</span>
       </div>
     </div>
     <div
-      class="h-10 flex flex-shrink-0 items-center justify-between px-3"
+      class="h-10 flex flex-shrink-0 items-center justify-between px-2"
     >
       <ButtonGroup
         v-model="activeView"
         :items="viewButtons"
         class="flex-shrink-0"
       />
-      <Tooltip content="Clear requests">
-        <div class="i:disabled shrink-0 cursor-pointer p-1 text-xl text-gray8 hover:text-gray10" @click="clear" />
-      </Tooltip>
+      <div class="flex gap-2">
+        <Tooltip content="Preflights">
+          <div :class="showPreflights ? 'i:preflight-enabled' : 'i:preflight-disabled'" class="shrink-0 cursor-pointer p-1 text-xl text-gray8 hover:text-gray10" @click="showPreflights = !showPreflights" />
+        </Tooltip>
+        <Tooltip content="Clear requests">
+          <div class="i:disabled shrink-0 cursor-pointer p-1 text-xl text-gray8 hover:text-gray10" @click="clear" />
+        </Tooltip>
+      </div>
     </div>
   </div>
 </template>

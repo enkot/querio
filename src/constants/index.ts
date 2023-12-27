@@ -12,7 +12,7 @@ export const TYPE_COLORS: Record<string, string> = {
   PUT: 'purple',
   PATCH: 'purple',
   DELETE: 'tomato',
-  OPTIONS: 'gray',
-  HEAD: 'gray',
+  OPTIONS: 'brown',
+  HEAD: 'brown',
 }
 

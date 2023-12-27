@@ -152,7 +152,7 @@ export function parseHTTPEntry(entry: HAREntry): HTTPEntry {
     else if (postData.text)
       body = JSON.parse(postData.text)
   }
-  const getResponse = () => getContent(entry)
+  const getResponse = async () => getContent(entry)
 
   return {
     type: method,
@@ -178,7 +178,7 @@ function isArray(arr: any): arr is any[] {
   return Array.isArray(arr)
 }
 
-export function parseGQLEntry(entry: HAREntry): GQLEntry | GQLEntry[] {
+export async function parseGQLEntry(entry: HAREntry): Promise<GQLEntry | GQLEntry[]> {
   const parsedQueries: ParsedQuery[] = []
   const { postData, queryString } = entry.request
 
@@ -243,7 +243,7 @@ export function parseGQLEntry(entry: HAREntry): GQLEntry | GQLEntry[] {
     })
   })
 
-  const fullParsedQueries = parsedQueries.map((parsedQuery, i) => {
+  const fullParsedQueries = await Promise.all(parsedQueries.map(async (parsedQuery, i) => {
     const { data, query, variables, operationName, batch } = parsedQuery
     const { name, type, operations } = data[0]
     const { request, response, ...base } = getEntryInfo(entry)
@@ -268,10 +268,11 @@ export function parseGQLEntry(entry: HAREntry): GQLEntry | GQLEntry[] {
       },
       response: {
         ...response,
+        isError: response.isError || !!(await getResponse()).errors,
         getResponse,
       },
     }
-  })
+  }))
 
   return isArray(json) ? fullParsedQueries : fullParsedQueries[0]
 }

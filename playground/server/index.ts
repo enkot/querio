@@ -74,7 +74,7 @@ const resolvers = {
   Query: {
     author: (_, args) => authors.find(author => author.id === args.id),
     authors: () => authors,
-    book: (_, args) => new Error('Test error'),
+    book: (_, args) => books.find(book => book.id === args.id), // new Error('Test error'),
     books: () => books,
     review: (_, args) => reviews.find(review => review.id === args.id),
     reviews: () => reviews,

@@ -44,7 +44,7 @@ const sortOptions = [
 
 <template>
   <div
-    class="h-10 flex justify-between bg-gray1 md:(h-auto w-10 flex-col)"
+    class="h-10 flex justify-between bg-gray2 md:(h-auto w-10 flex-col)"
   >
     <div class="h-10 w-10 flex items-center justify-center text-gray11A">
       <Logo class="h-4.5 w-4.5" />
@@ -100,7 +100,7 @@ const sortOptions = [
           <div class="mt-[25px] flex justify-end gap-2">
             <DialogClose as-child>
               <button
-                class="inline-flex items-center justify-center border border-pink3A rounded bg-pink3A px-3 py-2 font-semibold leading-none text-pink11 hover:bg-pink5 focus:shadow-[0_0_0_2px] focus:shadow-pink7 focus:outline-none"
+                class="inline-flex items-center justify-center border border-pink3A rounded bg-pink3A px-3 py-1.5 font-semibold leading-none text-pink11 hover:bg-pink5 focus:shadow-[0_0_0_2px] focus:shadow-pink7 focus:outline-none"
               >
                 Save changes
               </button>

@@ -7,11 +7,9 @@ const props = defineProps<{
 }>()
 
 const activeView = ref('data')
-const showPreflight = ref(false)
 const data = ref<string | null>(null)
 const parseError = ref<string | null>(null)
 const codeRef = ref<any>(null)
-const isError = ref(false)
 
 const viewButtons = computed(() => [
   {
@@ -26,7 +24,6 @@ const viewButtons = computed(() => [
 
 watch(() => props.entry, async (entry) => {
   parseError.value = null
-  isError.value = false
 
   if (!entry)
     return
@@ -40,7 +37,6 @@ watch(() => props.entry, async (entry) => {
     }
 
     data.value = formatData(response, entry.response.mimeType)
-    isError.value = entry.response.isError || (isGQLEntry(props.entry) && response.errors?.length)
   }
   catch (e: any) {
     data.value = null
@@ -59,10 +55,8 @@ defineExpose({
   <div class="response-block h-full flex flex-col of-hidden bg-gray1">
     <TopBar
       v-model="activeView"
-      v-model:preflight="showPreflight"
-      :has-preflight="!!entry.request.preflightHeaders"
       :items="viewButtons"
-      :color="isError ? 'red' : 'green'"
+      :color="entry.response.isError ? 'red' : 'green'"
       :copy-value="activeView === 'data' ? data as string : JSON.stringify(entry.response.headers, null, 2)"
       :show-search="activeView === 'data'"
       @toggle-search="codeRef.toggleSearch()"
@@ -117,7 +111,7 @@ defineExpose({
       </template>
       <Table
         v-else-if="activeView === 'headers'"
-        :items="entry.response.preflightHeaders && showPreflight ? entry.response.preflightHeaders : entry.response.headers"
+        :items="entry.response.headers"
         class="px-3 py-1"
       />
     </div>

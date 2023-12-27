@@ -41,7 +41,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative flex items-center gap-2 bg-gray1 px-3 py-1.5" @keydown.esc="closeSearchPanel(view)">
+  <div class="relative flex items-center gap-2 bg-gray1 px-2 py-1.5" @keydown.esc="closeSearchPanel(view)">
     <Input ref="inputRef" v-model="search" main-field="true" size="tiny" placeholder="Find" @onchange="commit" @keyup="commit" @keydown.enter.prevent="enter" />
     <Button size="tiny" @click.prevent="findNext(view)">
       Next

@@ -10,7 +10,6 @@ const props = defineProps<{
 }>()
 
 const activeView = ref('query')
-const showPreflight = ref(false)
 const mode = ref('graphql')
 const codeRef = ref<any>(null)
 
@@ -48,8 +47,6 @@ defineExpose({
   <div class="query-block h-full flex flex-col of-hidden bg-gray1">
     <TopBar
       v-model="activeView"
-      v-model:preflight="showPreflight"
-      :has-preflight="!!entry.request.preflightHeaders"
       :items="viewButtons"
       :color="TYPE_COLORS[entry.type]"
       :copy-value="activeView === 'query' ? (entry.type === 'GQL' ? parsedQuery as string : entry.request.url) : JSON.stringify(entry.request.headers, null, 2)"
@@ -114,7 +111,7 @@ defineExpose({
       </template>
       <Table
         v-else-if="activeView === 'headers'"
-        :items="entry.request.preflightHeaders && showPreflight ? entry.request.preflightHeaders : entry.request.headers"
+        :items="entry.request.headers"
         class="px-3 py-1"
       />
     </div>
