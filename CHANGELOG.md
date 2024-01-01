@@ -1,9 +1,9 @@
 # Changelog
 
 
-## v2.1.0
+## v1.2.0
 
-[compare changes](https://github.com/enkot/querio/compare/v1.1.1...v2.1.0)
+[compare changes](https://github.com/enkot/querio/compare/v1.1.1...v1.2.0)
 
 ### 🩹 Fixes
 
@@ -12,18 +12,6 @@
 ### 🏡 Chore
 
 - **release:** V2.0.0 ([c908bfc](https://github.com/enkot/querio/commit/c908bfc))
-
-### ❤️ Contributors
-
-- Enkot ([@enkot](http://github.com/enkot))
-
-## v2.0.0
-
-[compare changes](https://github.com/enkot/querio/compare/v1.1.1...v2.0.0)
-
-### 🩹 Fixes
-
-- Fix headers and use solid colors ([332a6b7](https://github.com/enkot/querio/commit/332a6b7))
 
 ### ❤️ Contributors
 
