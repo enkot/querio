@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v1.2.1
+
+[compare changes](https://github.com/enkot/querio/compare/v1.1.1...v1.2.1)
+
+### 🩹 Fixes
+
+- Fix headers and use solid colors ([332a6b7](https://github.com/enkot/querio/commit/332a6b7))
+- Version ([0ffe5d6](https://github.com/enkot/querio/commit/0ffe5d6))
+
+### 🏡 Chore
+
+- **release:** V2.0.0 ([c908bfc](https://github.com/enkot/querio/commit/c908bfc))
+- **release:** V2.1.0 ([15dec86](https://github.com/enkot/querio/commit/15dec86))
+
+### ❤️ Contributors
+
+- Enkot ([@enkot](http://github.com/enkot))
+
 ## v1.2.0
 
 [compare changes](https://github.com/enkot/querio/compare/v1.1.1...v1.2.0)
