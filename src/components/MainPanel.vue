@@ -97,15 +97,6 @@ const sortOptions = [
               />
             </div>
           </div>
-          <div class="mt-[25px] flex justify-end gap-2">
-            <DialogClose as-child>
-              <button
-                class="inline-flex items-center justify-center border border-pink3A rounded bg-pink3A px-3 py-1.5 font-semibold leading-none text-pink11 hover:bg-pink5 focus:shadow-[0_0_0_2px] focus:shadow-pink7 focus:outline-none"
-              >
-                Save changes
-              </button>
-            </DialogClose>
-          </div>
         </DialogContent>
       </DialogPortal>
     </DialogRoot>
@@ -118,6 +109,6 @@ const sortOptions = [
 }
 
 .dialog-content {
-  @apply fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-lg bg-gray2 border border-gray-4 px-6 py-4 focus:outline-none z-20 of-y-auto;
+  @apply fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-lg bg-gray2 border border-gray-4 px-6 py-6 focus:outline-none z-20 of-y-auto;
 }
 </style>

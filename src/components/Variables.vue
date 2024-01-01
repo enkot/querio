@@ -61,7 +61,7 @@ defineExpose({
       </div>
     </div>
     <div v-if="entry" class="relative flex flex-1 flex-col of-hidden border-t border-gray3">
-      <Table v-if="params" :items="params" class="px-3 py-3" />
+      <Table v-if="params" :items="params" class="px-2 py-1" />
       <Code v-else-if="variables || body" ref="codeRef" :code="(variables || body) as string" class="of-auto" />
     </div>
   </div>

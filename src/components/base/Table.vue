@@ -31,7 +31,7 @@ withDefaults(defineProps<{
           >
             <div class="group relative flex items-center rounded bg-gray2A text-blue12 dark:text-purple12">
               <div class="flex-grow px-2 py-1.5">
-                {{ item.name }}
+                {{ item.value }}
               </div>
               <CopyButton v-if="item.value" :value="item.value" class="sticky top-0 h-full flex-shrink-0 -right-2 op-0! group-hover:op-100!" />
             </div>

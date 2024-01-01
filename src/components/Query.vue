@@ -77,26 +77,28 @@ defineExpose({
           class="of-auto"
         />
         <div v-else class="flex flex-1 flex-col of-auto">
-          <div class="p-3">
+          <div class="px-2 py-3">
             <ul class="space-y-2">
-              <li class="flex flex-col font-semibold">
+              <li v-if="entry.request.host" class="flex flex-col font-semibold">
                 <div class="text-gray9">
                   Origin
                 </div>
-                <div
-                  class="mt-1 rounded-sm bg-gray2A px-2 py-1.5 text-gray12"
-                >
-                  {{ entry.request.host }}
+                <div class="group relative flex items-center rounded bg-gray2A text-gray12">
+                  <div class="flex-grow px-2 py-1.5">
+                    {{ entry.request.host }}
+                  </div>
+                  <CopyButton :value="entry.request.host" class="sticky top-0 h-full flex-shrink-0 -right-2 op-0! group-hover:op-100!" />
                 </div>
               </li>
               <li class="flex flex-col font-semibold">
                 <div class="text-gray9">
                   Path
                 </div>
-                <div
-                  class="mt-1 rounded-sm bg-gray2A px-2 py-1.5 text-green10"
-                >
-                  {{ entry.request.pathname }}
+                <div class="group relative flex items-center rounded bg-gray2A text-green10">
+                  <div class="flex-grow px-2 py-1.5">
+                    {{ entry.request.pathname }}
+                  </div>
+                  <CopyButton :value="entry.request.pathname" class="sticky top-0 h-full flex-shrink-0 -right-2 op-0! group-hover:op-100!" />
                 </div>
               </li>
               <li v-if="parsedQuery.length && (typeof parsedQuery !== 'string')" class="flex flex-col">
@@ -112,7 +114,7 @@ defineExpose({
       <Table
         v-else-if="activeView === 'headers'"
         :items="entry.request.headers"
-        class="px-3 py-1"
+        class="px-2 py-1"
       />
     </div>
   </div>

@@ -112,7 +112,7 @@ defineExpose({
       <Table
         v-else-if="activeView === 'headers'"
         :items="entry.response.headers"
-        class="px-3 py-1"
+        class="px-2 py-1"
       />
     </div>
   </div>

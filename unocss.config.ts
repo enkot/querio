@@ -42,17 +42,6 @@ export default defineConfig({
   },
   safelist: targetColors.map(color => [...Array(12).keys()].map(n => n + 1).map(n => [
     `bg-${color}${n}`,
-    `bg-${color}${n}A`,
-    `border-${color}${n}`,
-    `border-${color}${n}A`,
-    `dark:border-${color}${n}A`,
-    `border-x-${color}${n}`,
-    `border-x-${color}${n}A`,
-    `dark:bg-${color}${n}`,
-    `dark:bg-${color}${n}A`,
-    `text-${color}${n}`,
-    `dark:text-${color}${n}`,
-    `group-hover:bg-${color}${n}`,
   ])).flat(2),
   transformers: [
     transformerVariantGroup(),
