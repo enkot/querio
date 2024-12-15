@@ -21,6 +21,7 @@
 
 ![Querio](https://github.com/enkot/querio/blob/main/public/promo.png?raw=true)
 
+[Install Chrome Extension](https://chromewebstore.google.com/detail/querio-graphql-and-http-r/ojealanebldmhejpndmaenfcdpengbac?hl=en)
 
 ### **Features**
 
